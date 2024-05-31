@@ -47,7 +47,8 @@ class GameViewController: UIViewController {
     func setupScene() {
         scene = SCNScene(named: "art.scnassets/mainScene.scn")
         sceneView = SCNView(frame: self.view.bounds)
-        sceneView.allowsCameraControl = false
+        sceneView.allowsCameraControl = falsegit pull
+        
         sceneView.scene = scene
         
         // Add the SCNView to the view controller's view
