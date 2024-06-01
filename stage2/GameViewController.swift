@@ -14,6 +14,10 @@ class GameViewController: UIViewController {
     var roomNode: SCNNode!
     var lightNode: SCNNode!
     
+    // Safe Nodes
+    var safeNode: SCNNode!
+    var safeDoorNode: SCNNode!
+    
     // Position
     var isDone = false
     var isMoved = false
@@ -223,6 +227,22 @@ class GameViewController: UIViewController {
         print("player: \(cameraNode.position)")
         
         moveObjectToPlayerPosition()
+    }
+    
+    func openSafeDoor() {
+        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: (0 * .pi / 180), z: 0, duration: 1.5)
+        rotateAction.timingMode = .easeInEaseOut
+        self.safeDoorNode.runAction(rotateAction)
+    }
+    
+    func closeSafeDoor() {
+        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
+        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
+        
+        rotateAction.timingMode = .easeInEaseOut
+        gearRotationAction.timingMode = .easeInEaseOut
+        
+        self.safeDoorNode.runAction(rotateAction)
     }
 }
 
