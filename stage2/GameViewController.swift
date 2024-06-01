@@ -30,14 +30,14 @@ class GameViewController: UIViewController {
     //Limit
     var isLeft = 1
     var isRight = 1
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupScene()
         setupNode()
         setupGestures()
-//        setUpAudioCapture()
-//        playAmbience()
+        setUpAudioCapture()
+        //        playAmbience()
     }
     
     //SETUP SCENE
@@ -46,14 +46,15 @@ class GameViewController: UIViewController {
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
         roomNode = scene.rootNode.childNode(withName: "Room reference", recursively: true)!
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
-        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
-        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
+        //        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
+        //        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
     }
     
     func setupScene() {
         scene = SCNScene(named: "art.scnassets/mainScene.scn")
         sceneView = SCNView(frame: self.view.bounds)
         sceneView.allowsCameraControl = false
+        
         sceneView.scene = scene
         
         // Add the SCNView to the view controller's view
@@ -81,8 +82,14 @@ class GameViewController: UIViewController {
         do {
             try recordingSession.setCategory(.playAndRecord)
             try recordingSession.setActive(true)
+            AVAudioApplication.requestRecordPermission(completionHandler: {
+                response in print(response)
+            })
+            //            recordingSession.requestRecordPermission({ result in
+            //
+            //                guard result else { return }
+            //            })
             captureAudio()
-            
         } catch {
             print("Error: Failed to set up recording session.")
         }
@@ -111,7 +118,7 @@ class GameViewController: UIViewController {
                     self.audioTriggered()
                     print("Triggered")
                 }
-                print(self.db ?? "")
+                print(self.db!)
             }
         } catch {
             print("ERROR: Failed to start recording process.")
@@ -153,29 +160,29 @@ class GameViewController: UIViewController {
         
         
     }
-
+    
     func setupGestures() {
-           let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
-           swipeLeft.direction = .left
-           sceneView.addGestureRecognizer(swipeLeft)
-           
-           let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
-           swipeRight.direction = .right
-           sceneView.addGestureRecognizer(swipeRight)
-       }
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+        swipeLeft.direction = .left
+        sceneView.addGestureRecognizer(swipeLeft)
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
+        swipeRight.direction = .right
+        sceneView.addGestureRecognizer(swipeRight)
+    }
     
     @objc func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
-            switch gesture.direction {
-            case .left:
-                print("Swiped left")
-                rotateCameraLeft()
-            case .right:
-                print("Swiped right")
-                rotateCameraRight()
-            default:
-                break
-            }
+        switch gesture.direction {
+        case .left:
+            print("Swiped left")
+            rotateCameraLeft()
+        case .right:
+            print("Swiped right")
+            rotateCameraRight()
+        default:
+            break
         }
+    }
     
     override var prefersStatusBarHidden: Bool {
         return true

@@ -9,33 +9,39 @@ import MultipeerConnectivity
 
 class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate {
     // MARK: - Properties
-    let pairingCode: String = ""
+    var pairingCode: String = ""
     let serviceType = "dreadscape"
-    var myPeerId: MCPeerID
-    var advertiser: MCNearbyServiceAdvertiser
-    var browser: MCNearbyServiceBrowser
-    var session: MCSession
+    var myPeerId: MCPeerID?
+    var advertiser: MCNearbyServiceAdvertiser?
+    var browser: MCNearbyServiceBrowser?
+    var session: MCSession?
     
     @Published var isLoading = false
     @Published var connectedPeer: MCPeerID?
     
     override init() {
-        myPeerId = MCPeerID(displayName: pairingCode)
-        session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: .required)
-        advertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
-        browser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
         super.init()
+    }
+    
+    func activate() {
+        guard session == nil else { return }
+        myPeerId = MCPeerID(displayName: pairingCode)
+        session = MCSession(peer: myPeerId!, securityIdentity: nil, encryptionPreference: .required)
+        advertiser = MCNearbyServiceAdvertiser(peer: myPeerId!, discoveryInfo: nil, serviceType: serviceType)
+        browser = MCNearbyServiceBrowser(peer: myPeerId!, serviceType: serviceType)
         
-        session.delegate = self
-        advertiser.delegate = self
-        browser.delegate = self
+        session?.delegate = self
+        advertiser?.delegate = self
+        browser?.delegate = self
         
-        advertiser.startAdvertisingPeer()
-        browser.startBrowsingForPeers()
+        advertiser?.startAdvertisingPeer()
+        browser?.startBrowsingForPeers()
     }
     
     // MARK: Methods
     func invitePeer(_ peer: MCPeerID) {
+        guard let browser = browser, let session = session else { return }
+        
         Task {
             isLoading = true
             browser.invitePeer(peer, to: session, withContext: nil, timeout: 30)
@@ -45,7 +51,6 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
     // MARK: - MCNearbyServiceBrowserDelegate
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         DispatchQueue.main.async {
-            // If username match, connect to the peer
             if peerID.displayName == self.pairingCode {
                 self.invitePeer(peerID)
             }
@@ -54,19 +59,15 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         DispatchQueue.main.async {
-            
+            // Handle lost peer
         }
     }
     
     // MARK: - MCNearbyServiceAdvertiserDelegate
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         DispatchQueue.main.async {
-           // Accept the invitation
             invitationHandler(true, self.session)
-            // Stop searching for peers
-            self.browser.stopBrowsingForPeers()
-            // Stop advertising
-            self.advertiser.stopAdvertisingPeer()
+            self.browser?.stopBrowsingForPeers()
         }
     }
     
@@ -75,9 +76,15 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
         DispatchQueue.main.async {
             switch state {
             case .connected:
+//                print("""
+//                    Connected to \(peerID.displayName)
+//                    """)
                 self.connectedPeer = peerID
                 self.isLoading = false
             case .notConnected:
+//                print("""
+//                    Disconnected from \(peerID.displayName)
+//                    """)
                 self.connectedPeer = nil
                 self.isLoading = false
             default:
@@ -103,7 +110,6 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
     }
     
     func session(_ session: MCSession, didReceive certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {
-        // This is a security feature that you can implement to authenticate the connecting peers
-        certificateHandler(true) // Accept the certificate for now; implement proper checks as needed for your app
+        certificateHandler(true)
     }
 }

@@ -33,3 +33,7 @@ struct ChooseDoorView: View {
         .background(.black)
     }
 }
+
+#Preview {
+    ChooseDoorView()
+}
