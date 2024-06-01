@@ -14,6 +14,10 @@ class GameViewController: UIViewController {
     var roomNode: SCNNode!
     var lightNode: SCNNode!
     
+    // Safe Nodes
+    var safeNode: SCNNode!
+    var safeDoorNode: SCNNode!
+    
     // Position
     var isDone = false
     var isMoved = false
@@ -42,12 +46,14 @@ class GameViewController: UIViewController {
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
         roomNode = scene.rootNode.childNode(withName: "Room reference", recursively: true)!
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
+        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
+        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
     }
     
     func setupScene() {
         scene = SCNScene(named: "art.scnassets/mainScene.scn")
         sceneView = SCNView(frame: self.view.bounds)
-        sceneView.allowsCameraControl = falsegit pull
+        sceneView.allowsCameraControl = false
         
         sceneView.scene = scene
         
@@ -76,11 +82,6 @@ class GameViewController: UIViewController {
         do {
             try recordingSession.setCategory(.playAndRecord)
             try recordingSession.setActive(true)
-            
-            recordingSession.requestRecordPermission({ result in
-                guard result else { return }
-            })
-            
             captureAudio()
             
         } catch {
@@ -111,7 +112,7 @@ class GameViewController: UIViewController {
                     self.audioTriggered()
                     print("Triggered")
                 }
-                print(self.db)
+                print(self.db ?? "")
             }
         } catch {
             print("ERROR: Failed to start recording process.")
@@ -214,12 +215,28 @@ class GameViewController: UIViewController {
     }
     
     func audioTriggered() {
-        print("Triggered: \(db)")
+        print("Triggered: \(String(describing: db))")
         let playerPosition = cameraNode.position
         print("ghost: \(ghostNode.position)")
         print("player: \(cameraNode.position)")
         
         moveObjectToPlayerPosition()
+    }
+    
+    func openSafeDoor() {
+        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: (0 * .pi / 180), z: 0, duration: 1.5)
+        rotateAction.timingMode = .easeInEaseOut
+        self.safeDoorNode.runAction(rotateAction)
+    }
+    
+    func closeSafeDoor() {
+        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
+        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
+        
+        rotateAction.timingMode = .easeInEaseOut
+        gearRotationAction.timingMode = .easeInEaseOut
+        
+        self.safeDoorNode.runAction(rotateAction)
     }
 }
 

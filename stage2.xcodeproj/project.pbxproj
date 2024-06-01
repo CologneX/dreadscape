@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FD5B4ADB2BFDEE8D00DB0981 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5B4ADA2BFDEE8D00DB0981 /* AppDelegate.swift */; };
+		936ACED72C09D73600688406 /* MultipeerConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936ACED52C09D73600688406 /* MultipeerConnectivity.swift */; };
+		936ACED92C09D74800688406 /* ChooseDoorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936ACED82C09D74800688406 /* ChooseDoorView.swift */; };
+		936ACEDD2C09D8DE00688406 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 936ACEDC2C09D8DE00688406 /* AppDelegate.swift */; };
 		FD5B4ADD2BFDEE8D00DB0981 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */; };
 		FD5B4ADF2BFDEE8D00DB0981 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5B4ADE2BFDEE8D00DB0981 /* GameViewController.swift */; };
 		FD5B4AE22BFDEE8D00DB0981 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = FD5B4AE12BFDEE8D00DB0981 /* Base */; };
@@ -17,8 +19,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		936ACED52C09D73600688406 /* MultipeerConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipeerConnectivity.swift; sourceTree = "<group>"; };
+		936ACED82C09D74800688406 /* ChooseDoorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChooseDoorView.swift; sourceTree = "<group>"; };
+		936ACEDC2C09D8DE00688406 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../../dreadscape-kyrell/stage2/AppDelegate.swift"; sourceTree = "<group>"; };
 		FD5B4AD72BFDEE8D00DB0981 /* stage2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = stage2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FD5B4ADA2BFDEE8D00DB0981 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		FD5B4ADE2BFDEE8D00DB0981 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		FD5B4AE12BFDEE8D00DB0981 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -38,6 +42,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		936ACED62C09D73600688406 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				936ACED52C09D73600688406 /* MultipeerConnectivity.swift */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
 		FD5B4ACE2BFDEE8D00DB0981 = {
 			isa = PBXGroup;
 			children = (
@@ -57,9 +69,11 @@
 		FD5B4AD92BFDEE8D00DB0981 /* stage2 */ = {
 			isa = PBXGroup;
 			children = (
-				FD5B4ADA2BFDEE8D00DB0981 /* AppDelegate.swift */,
+				936ACEDC2C09D8DE00688406 /* AppDelegate.swift */,
+				936ACED62C09D73600688406 /* utils */,
 				FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */,
 				FD5B4ADE2BFDEE8D00DB0981 /* GameViewController.swift */,
+				936ACED82C09D74800688406 /* ChooseDoorView.swift */,
 				FD782DC12C09B7FF002E394E /* horror_ambience.mp3 */,
 				FD5B4AE02BFDEE8D00DB0981 /* Main.storyboard */,
 				FD5B4AE32BFDEE8E00DB0981 /* Assets.xcassets */,
@@ -141,8 +155,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				936ACEDD2C09D8DE00688406 /* AppDelegate.swift in Sources */,
 				FD5B4ADF2BFDEE8D00DB0981 /* GameViewController.swift in Sources */,
-				FD5B4ADB2BFDEE8D00DB0981 /* AppDelegate.swift in Sources */,
+				936ACED72C09D73600688406 /* MultipeerConnectivity.swift in Sources */,
+				936ACED92C09D74800688406 /* ChooseDoorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
