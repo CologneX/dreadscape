@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct PairingView: View {
-    @ObservedObject var multipeer: MultipeerManager = MultipeerManager()
-    
+    @ObservedObject var multipeer: MultipeerManager
     @State var pairingCode: String = ""
     private func appendCode(_ code: String){
         if pairingCode.count < 6 {
@@ -149,8 +148,4 @@ struct PairingView: View {
         }
         
     }
-}
-
-#Preview {
-    PairingView()
 }
