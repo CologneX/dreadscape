@@ -37,7 +37,7 @@ class GameViewController: UIViewController {
         setupNode()
         setupGestures()
         setUpAudioCapture()
-        //        playAmbience()
+        playAmbience()
     }
     
     //SETUP SCENE
