@@ -12,11 +12,12 @@
 		93C632792C0BD2FA0060A78A /* ChooseDoorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C632762C0BD2FA0060A78A /* ChooseDoorView.swift */; };
 		93C6327A2C0BD2FA0060A78A /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C632772C0BD2FA0060A78A /* PairingView.swift */; };
 		93C6327D2C0BD3120060A78A /* MultipeerConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C6327B2C0BD3120060A78A /* MultipeerConnectivity.swift */; };
-		FD5B4ADB2BFDEE8D00DB0981 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5B4ADA2BFDEE8D00DB0981 /* AppDelegate.swift */; };
+		FD5B4ADB2BFDEE8D00DB0981 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		FD5B4ADD2BFDEE8D00DB0981 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */; };
 		FD5B4ADF2BFDEE8D00DB0981 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5B4ADE2BFDEE8D00DB0981 /* GameViewController.swift */; };
 		FD5B4AE42BFDEE8E00DB0981 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD5B4AE32BFDEE8E00DB0981 /* Assets.xcassets */; };
 		FD782DC22C09B7FF002E394E /* horror_ambience.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FD782DC12C09B7FF002E394E /* horror_ambience.mp3 */; };
+		FD782DC62C0CA67E002E394E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD782DC52C0CA67E002E394E /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		FD5B4ADE2BFDEE8D00DB0981 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		FD5B4AE32BFDEE8E00DB0981 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FD782DC12C09B7FF002E394E /* horror_ambience.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = horror_ambience.mp3; sourceTree = "<group>"; };
+		FD782DC52C0CA67E002E394E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,9 +74,9 @@
 		FD5B4AD92BFDEE8D00DB0981 /* stage2 */ = {
 			isa = PBXGroup;
 			children = (
+				FD782DC52C0CA67E002E394E /* AppDelegate.swift */,
 				93C6327E2C0BD5400060A78A /* Info.plist */,
 				93C6327C2C0BD3120060A78A /* utils */,
-				FD5B4ADA2BFDEE8D00DB0981 /* AppDelegate.swift */,
 				FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */,
 				FD5B4ADE2BFDEE8D00DB0981 /* GameViewController.swift */,
 				93C632762C0BD2FA0060A78A /* ChooseDoorView.swift */,
@@ -161,7 +163,8 @@
 				93C6327A2C0BD2FA0060A78A /* PairingView.swift in Sources */,
 				93C632782C0BD2FA0060A78A /* DreadscapeApp.swift in Sources */,
 				FD5B4ADF2BFDEE8D00DB0981 /* GameViewController.swift in Sources */,
-				FD5B4ADB2BFDEE8D00DB0981 /* AppDelegate.swift in Sources */,
+				FD5B4ADB2BFDEE8D00DB0981 /* (null) in Sources */,
+				FD782DC62C0CA67E002E394E /* AppDelegate.swift in Sources */,
 				93C6327D2C0BD3120060A78A /* MultipeerConnectivity.swift in Sources */,
 				93C632792C0BD2FA0060A78A /* ChooseDoorView.swift in Sources */,
 			);
@@ -296,7 +299,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = KNP937X993;
+				DEVELOPMENT_TEAM = 3K8JGLP9HY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = stage2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dreadscape;
@@ -334,7 +337,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = KNP937X993;
+				DEVELOPMENT_TEAM = 3K8JGLP9HY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = stage2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dreadscape;

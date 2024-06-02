@@ -1,11 +1,7 @@
-//
-//  AppDelegate.swift
-//  stage2
-//
-//  Created by Rio Jonathan on 22/05/24.
-//
+
 
 import UIKit
+
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
