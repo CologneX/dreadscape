@@ -61,7 +61,6 @@
 		FD5B4ACE2BFDEE8D00DB0981 = {
 			isa = PBXGroup;
 			children = (
-				93AFC5882C0C665300CA671A /* GameView.swift */,
 				93C632732C0BD2500060A78A /* .gitignore */,
 				FD5B4AD92BFDEE8D00DB0981 /* stage2 */,
 				FD5B4AD82BFDEE8D00DB0981 /* Products */,
@@ -83,6 +82,7 @@
 				93C6327C2C0BD3120060A78A /* utils */,
 				FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */,
 				93C632762C0BD2FA0060A78A /* ChooseDoorView.swift */,
+				93AFC5882C0C665300CA671A /* GameView.swift */,
 				93C632752C0BD2FA0060A78A /* DreadscapeApp.swift */,
 				93C632772C0BD2FA0060A78A /* PairingView.swift */,
 				FD782DC12C09B7FF002E394E /* horror_ambience.mp3 */,
