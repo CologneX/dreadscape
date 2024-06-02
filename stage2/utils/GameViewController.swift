@@ -36,7 +36,7 @@ class GameViewController: UIViewController {
         setupScene()
         setupNode()
         setupGestures()
-        setUpAudioCapture()
+//        setUpAudioCapture()
         playAmbience()
     }
     
@@ -44,7 +44,7 @@ class GameViewController: UIViewController {
     func setupNode() {
         cameraNode = scene.rootNode.childNode(withName: "camera", recursively: true)!
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
-        roomNode = scene.rootNode.childNode(withName: "Room reference", recursively: true)!
+        roomNode = scene.rootNode.childNode(withName: "Room2 reference", recursively: true)!
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         //        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
         //        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!

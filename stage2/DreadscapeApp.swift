@@ -15,12 +15,13 @@ struct DreadscapeApp: App {
     @ObservedObject var multipeer: MultipeerManager = MultipeerManager()
     var body: some Scene {
         WindowGroup{
-            switch self.multipeer.session  {
-            case .some:
-                GameView()
-            case .none:
-                PairingView(multipeer: multipeer)
-            }
+            GameView()
+//            switch self.multipeer.session  {
+//            case .some:
+//                GameView()
+//            case .none:
+//                PairingView(multipeer: multipeer)
+//            }
         }
     }
 }
