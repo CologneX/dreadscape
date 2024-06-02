@@ -246,6 +246,3 @@ class GameViewController: UIViewController {
     }
 }
 
-#Preview{
-    GameViewController()
-}

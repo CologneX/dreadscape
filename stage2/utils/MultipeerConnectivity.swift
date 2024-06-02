@@ -24,18 +24,20 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
     }
     
     func activate() {
-        guard session == nil else { return }
-        myPeerId = MCPeerID(displayName: pairingCode)
-        session = MCSession(peer: myPeerId!, securityIdentity: nil, encryptionPreference: .required)
-        advertiser = MCNearbyServiceAdvertiser(peer: myPeerId!, discoveryInfo: nil, serviceType: serviceType)
-        browser = MCNearbyServiceBrowser(peer: myPeerId!, serviceType: serviceType)
-        
-        session?.delegate = self
-        advertiser?.delegate = self
-        browser?.delegate = self
-        
-        advertiser?.startAdvertisingPeer()
-        browser?.startBrowsingForPeers()
+        // Execute on the main thread
+        DispatchQueue.main.async {
+            self.myPeerId = MCPeerID(displayName: self.pairingCode)
+            self.session = MCSession(peer: self.myPeerId!, securityIdentity: nil, encryptionPreference: .required)
+            self.advertiser = MCNearbyServiceAdvertiser(peer: self.myPeerId!, discoveryInfo: nil, serviceType: self.serviceType)
+            self.browser = MCNearbyServiceBrowser(peer: self.myPeerId!, serviceType: self.serviceType)
+            
+            self.session?.delegate = self
+            self.advertiser?.delegate = self
+            self.browser?.delegate = self
+            
+            self.advertiser?.startAdvertisingPeer()
+            self.browser?.startBrowsingForPeers()
+        }
     }
     
     // MARK: Methods
@@ -76,15 +78,15 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
         DispatchQueue.main.async {
             switch state {
             case .connected:
-//                print("""
-//                    Connected to \(peerID.displayName)
-//                    """)
+                //                print("""
+                //                    Connected to \(peerID.displayName)
+                //                    """)
                 self.connectedPeer = peerID
                 self.isLoading = false
             case .notConnected:
-//                print("""
-//                    Disconnected from \(peerID.displayName)
-//                    """)
+                //                print("""
+                //                    Disconnected from \(peerID.displayName)
+                //                    """)
                 self.connectedPeer = nil
                 self.isLoading = false
             default:
