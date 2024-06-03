@@ -51,8 +51,7 @@ class GameViewController: UIViewController {
         roomNode = scene.rootNode.childNode(withName: "Room2 reference", recursively: true)!
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         bassNode = scene.rootNode.childNode(withName: "bass reference", recursively: false)
-        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
-        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
+        safeNode = scene.rootNode.childNode(withName: "Safe reference", recursively: true)!
     }
     
     func setupScene() {
@@ -265,20 +264,20 @@ class GameViewController: UIViewController {
         moveObjectToPlayerPosition()
     }
     
-    func openSafeDoor() {
-        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: (0 * .pi / 180), z: 0, duration: 1.5)
-        rotateAction.timingMode = .easeInEaseOut
-        self.safeDoorNode.runAction(rotateAction)
-    }
-    
-    func closeSafeDoor() {
-        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
-        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
-        
-        rotateAction.timingMode = .easeInEaseOut
-        gearRotationAction.timingMode = .easeInEaseOut
-        
-        self.safeDoorNode.runAction(rotateAction)
-    }
+//    func openSafeDoor() {
+//        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: (0 * .pi / 180), z: 0, duration: 1.5)
+//        rotateAction.timingMode = .easeInEaseOut
+//        self.safeDoorNode.runAction(rotateAction)
+//    }
+//    
+//    func closeSafeDoor() {
+//        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
+//        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
+//        
+//        rotateAction.timingMode = .easeInEaseOut
+//        gearRotationAction.timingMode = .easeInEaseOut
+//        
+//        self.safeDoorNode.runAction(rotateAction)
+//    }
 }
 
