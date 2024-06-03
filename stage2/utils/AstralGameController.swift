@@ -1,9 +1,16 @@
+//
+//  AstralGameController.swift
+//  stage2
+//
+//  Created by Kyrell Leano Siauw on 03/06/24.
+//
+
 import UIKit
 import QuartzCore
 import SceneKit
 import AVFoundation
 
-class GameViewController: UIViewController {
+class AstralGameController: UIViewController {
     
     var sceneView: SCNView!
     var scene: SCNScene!
@@ -31,13 +38,31 @@ class GameViewController: UIViewController {
     var isLeft = 1
     var isRight = 1
     
+    // Multipeer Connectivity Manager
+    var multipeerManager: MultipeerManager!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupScene()
         setupNode()
         setupGestures()
         setUpAudioCapture()
         playAmbience()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleGameStateChange(_:)), name: .gameStateDidChange, object: nil)
+    }
+    
+    @objc func handleGameStateChange(_ notification: Notification) {
+        if let gameState = notification.object as? String {
+            if gameState == "moveObjectToPlayerPosition" {
+                moveObjectToPlayerPosition()
+            }
+        }
+    }
+    @objc func handleUserDidDisconnect() {
+        // Navigate back to main menu
+        self.navigationController?.popToRootViewController(animated: true)
     }
     
     //SETUP SCENE
@@ -64,7 +89,7 @@ class GameViewController: UIViewController {
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.numberOfTouchesRequired = 1
         
-        tapRecognizer.addTarget(self, action: #selector(GameViewController.sceneViewTapped(recognizer:)))
+        tapRecognizer.addTarget(self, action: #selector(ModernGameController.sceneViewTapped(recognizer:)))
         sceneView.addGestureRecognizer(tapRecognizer)
     }
     
@@ -85,10 +110,7 @@ class GameViewController: UIViewController {
             AVAudioApplication.requestRecordPermission(completionHandler: {
                 response in print(response)
             })
-            //            recordingSession.requestRecordPermission({ result in
-            //
-            //                guard result else { return }
-            //            })
+            
             captureAudio()
         } catch {
             print("Error: Failed to set up recording session.")
@@ -125,10 +147,6 @@ class GameViewController: UIViewController {
         }
     }
     
-    
-    
-    
-    
     @objc func rotateCameraLeft() {
         
         //Check if next move is at limit or not
@@ -157,8 +175,6 @@ class GameViewController: UIViewController {
             isRight += 1
             isLeft -= 1
         }
-        
-        
     }
     
     func setupGestures() {
@@ -210,9 +226,9 @@ class GameViewController: UIViewController {
         print("\(cameraNode.convertPosition(cameraNode.position, to: scene.rootNode))")
         let position = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
         
-        let positionx = cameraNode.position.x
-        let positiony = cameraNode.position.y - 16
-        let positionz = cameraNode.position.z + 14
+        let positionx = cameraNode.position.x - 5
+        let positiony = cameraNode.position.y
+        let positionz = cameraNode.position.z - 90
         
         let position2 = SCNVector3(x: positionx, y: positiony, z: positionz)
         
@@ -227,6 +243,8 @@ class GameViewController: UIViewController {
         print("player: \(cameraNode.position)")
         
         moveObjectToPlayerPosition()
+        
+        multipeerManager.changeGameState("moveObjectToPlayerPosition")
     }
     
     func openSafeDoor() {
@@ -236,11 +254,9 @@ class GameViewController: UIViewController {
     }
     
     func closeSafeDoor() {
-        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
         let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
         
         rotateAction.timingMode = .easeInEaseOut
-        gearRotationAction.timingMode = .easeInEaseOut
         
         self.safeDoorNode.runAction(rotateAction)
     }
