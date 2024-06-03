@@ -12,11 +12,11 @@ class ModernGameController: UIViewController {
     var ghostNode: SCNNode!
     var roomNode: SCNNode!
     var lightNode: SCNNode!
-    
-    // Safe Nodes
+    var bassNode: SCNNode!
     var safeNode: SCNNode!
     var safeDoorNode: SCNNode!
-    
+    var shelfNode: SCNNode!
+
     // Position
     var isDone = false
     var isMoved = false
@@ -30,6 +30,10 @@ class ModernGameController: UIViewController {
     var isLeft = 1
     var isRight = 1
     
+    //Camera Position
+    var cameraPositionStart = SCNVector3(x: -3.801, y: 137.466, z: 103.739)
+    
+    
     // Multipeer Connectivity Manager
     var multipeerManager: MultipeerManager!
     
@@ -38,8 +42,9 @@ class ModernGameController: UIViewController {
         
         setupScene()
         setupNode()
+        setupCamera()
         setupGestures()
-        setUpAudioCapture()
+//        setUpAudioCapture()
         playAmbience()
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleGameStateChange(_:)), name: .gameStateDidChange, object: nil)
@@ -57,10 +62,11 @@ class ModernGameController: UIViewController {
     func setupNode() {
         cameraNode = scene.rootNode.childNode(withName: "camera", recursively: true)!
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
-        roomNode = scene.rootNode.childNode(withName: "Room reference", recursively: true)!
+        roomNode = scene.rootNode.childNode(withName: "Room2 reference", recursively: true)!
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
-        //        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
-        //        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
+        bassNode = scene.rootNode.childNode(withName: "bass reference", recursively: false)
+        safeNode = scene.rootNode.childNode(withName: "Safe reference", recursively: true)!
+        shelfNode = scene.rootNode.childNode(withName: "shelf reference", recursively: true)!
     }
     
     func setupScene() {
@@ -73,6 +79,9 @@ class ModernGameController: UIViewController {
         // Add the SCNView to the view controller's view
         self.view.addSubview(sceneView)
         
+       
+        
+        
         let tapRecognizer = UITapGestureRecognizer()
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.numberOfTouchesRequired = 1
@@ -81,6 +90,11 @@ class ModernGameController: UIViewController {
         sceneView.addGestureRecognizer(tapRecognizer)
     }
     
+    func setupCamera() {
+        //Camera Position Start
+        let cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        
+    }
     
     func playAmbience() {
         let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
@@ -98,7 +112,10 @@ class ModernGameController: UIViewController {
             AVAudioApplication.requestRecordPermission(completionHandler: {
                 response in print(response)
             })
-            
+            //            recordingSession.requestRecordPermission({ result in
+            //
+            //                guard result else { return }
+            //            })
             captureAudio()
         } catch {
             print("Error: Failed to set up recording session.")
@@ -200,12 +217,48 @@ class ModernGameController: UIViewController {
     }
     
     @objc func sceneViewTapped(recognizer: UITapGestureRecognizer) {
+        
+        
+        
         let p = recognizer.location(in: sceneView)
         let hitResults = sceneView.hitTest(p, options: [:])
         
         if let hitResult = hitResults.first {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
+            
+            
+            //Check What Tapped
+            if(tappedNode.name == "bass1" || tappedNode.name == "bass2"){
+                let bassPositionX = bassNode.position.x
+                let bassPositionY = bassNode.position.y
+                let bassPositionZ = bassNode.position.z + 150
+                
+                let positionTo = SCNVector3(x: bassPositionX, y: bassPositionY, z: bassPositionZ)
+                let moveAction = SCNAction.move(to: positionTo, duration: 1)
+                cameraNode.runAction(moveAction)
+            } else if(tappedNode.name == "stool1" || tappedNode.name == "stool2" || tappedNode.name == "safe"){
+                let safePositionX = safeNode.position.x
+                let safePositionY = safeNode.position.y
+                let safePositionZ = safeNode.position.z + 150
+                
+                let positionTo = SCNVector3(x: safePositionX, y: safePositionY, z: safePositionZ)
+                let moveAction = SCNAction.move(to: positionTo, duration: 1)
+                cameraNode.runAction(moveAction)
+            }
+            else if(tappedNode.name == "shelf"){
+                let shelfPositionX = shelfNode.position.x - 55
+                let shelfPositionY = shelfNode.position.y + 134
+                let shelfPositionZ = shelfNode.position.z + 234
+                
+                let positionTo = SCNVector3(x: shelfPositionX, y: shelfPositionY, z: shelfPositionZ)
+                let moveAction = SCNAction.move(to: positionTo, duration: 1)
+                cameraNode.runAction(moveAction)
+            }else if (tappedNode.name == "wall"){
+                let moveAction = SCNAction.move(to: cameraPositionStart, duration: 1)
+                cameraNode.runAction(moveAction)
+            }
+            
         }
     }
     
@@ -233,17 +286,19 @@ class ModernGameController: UIViewController {
         multipeerManager.changeGameState("moveObjectToPlayerPosition")
     }
     
-    func openSafeDoor() {
-        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: (0 * .pi / 180), z: 0, duration: 1.5)
-        rotateAction.timingMode = .easeInEaseOut
-        self.safeDoorNode.runAction(rotateAction)
-    }
-    
-    func closeSafeDoor() {
-        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
-        
-        rotateAction.timingMode = .easeInEaseOut
-        
-        self.safeDoorNode.runAction(rotateAction)
-    }
+//    func openSafeDoor() {
+//        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: (0 * .pi / 180), z: 0, duration: 1.5)
+//        rotateAction.timingMode = .easeInEaseOut
+//        self.safeDoorNode.runAction(rotateAction)
+//    }
+//    
+//    func closeSafeDoor() {
+//        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
+//        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
+//        
+//        rotateAction.timingMode = .easeInEaseOut
+//        gearRotationAction.timingMode = .easeInEaseOut
+//        
+//        self.safeDoorNode.runAction(rotateAction)
+//    }
 }
