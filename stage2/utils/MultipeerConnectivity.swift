@@ -6,6 +6,9 @@
 //
 
 import MultipeerConnectivity
+extension Notification.Name {
+    static let gameStateDidChange = Notification.Name("gameStateDidChange")
+}
 
 class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate {
     // MARK: - Properties
@@ -18,6 +21,9 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
     
     @Published var isLoading = false
     @Published var connectedPeer: MCPeerID?
+    
+    // Reference to the game controller
+    var gameController: ModernGameController?
     
     override init() {
         super.init()
@@ -44,9 +50,20 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
     func invitePeer(_ peer: MCPeerID) {
         guard let browser = browser, let session = session else { return }
         
-        Task {
-            isLoading = true
+        DispatchQueue.main.async {
+            self.isLoading = true
             browser.invitePeer(peer, to: session, withContext: nil, timeout: 30)
+        }
+    }
+    
+    func changeGameState(_ state: String) {
+        // Broadcast the state change to peers
+        if let data = state.data(using: .utf8) {
+            do {
+                try self.session!.send(data, toPeers: self.session!.connectedPeers, with: .reliable)
+            } catch {
+                print("Error sending game state: \(error.localizedDescription)")
+            }
         }
     }
     
@@ -69,7 +86,6 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         DispatchQueue.main.async {
             invitationHandler(true, self.session)
-            self.browser?.stopBrowsingForPeers()
         }
     }
     
@@ -78,37 +94,40 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
         DispatchQueue.main.async {
             switch state {
             case .connected:
-                //                print("""
-                //                    Connected to \(peerID.displayName)
-                //                    """)
                 self.connectedPeer = peerID
                 self.isLoading = false
             case .notConnected:
-                //                print("""
-                //                    Disconnected from \(peerID.displayName)
-                //                    """)
                 self.connectedPeer = nil
                 self.isLoading = false
+                self.session?.disconnect()
             default:
                 break
             }
         }
     }
-    
+
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        // Handle receiving data
+        // Handle received data
+        if let state = String(data: data, encoding: .utf8) {
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .gameStateDidChange, object: state)
+            }
+        }
     }
     
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
         // Handle receiving a stream
+        fatalError("This method has not been implemented")
     }
     
     func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
         // Handle the start of receiving a resource
+        fatalError("This method has not been implemented")
     }
     
     func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         // Handle finishing receiving a resource
+        fatalError("This method has not been implemented")
     }
     
     func session(_ session: MCSession, didReceive certificate: [Any]?, fromPeer peerID: MCPeerID, certificateHandler: @escaping (Bool) -> Void) {

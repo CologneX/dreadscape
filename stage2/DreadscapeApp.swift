@@ -13,15 +13,18 @@ struct DreadscapeApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     // Multipeer Instance
     @ObservedObject var multipeer: MultipeerManager = MultipeerManager()
+
     var body: some Scene {
         WindowGroup{
-            GameView()
-//            switch self.multipeer.session  {
-//            case .some:
-//                GameView()
-//            case .none:
-//                PairingView(multipeer: multipeer)
-//            }
+            Group{
+                switch self.multipeer.connectedPeer  {
+                case .some:
+                    ModernGameView(multipeer: multipeer)
+                case .none:
+                    PairingView(multipeer: multipeer)
+                }
+            }
+            .animation(.default)
         }
     }
 }
