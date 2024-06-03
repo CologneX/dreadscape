@@ -16,6 +16,7 @@ class GameViewController: UIViewController {
     var bassNode: SCNNode!
     var safeNode: SCNNode!
     var safeDoorNode: SCNNode!
+    var shelfNode: SCNNode!
 
     // Position
     var isDone = false
@@ -31,7 +32,7 @@ class GameViewController: UIViewController {
     var isRight = 1
     
     //Camera Position
-    var cameraPositionStart = SCNVector3(x: -1.176, y: 119.345, z: 31.818)
+    var cameraPositionStart = SCNVector3(x: -3.801, y: 137.466, z: 103.739)
     
     
     override func viewDidLoad() {
@@ -52,6 +53,7 @@ class GameViewController: UIViewController {
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         bassNode = scene.rootNode.childNode(withName: "bass reference", recursively: false)
         safeNode = scene.rootNode.childNode(withName: "Safe reference", recursively: true)!
+        shelfNode = scene.rootNode.childNode(withName: "shelf reference", recursively: true)!
     }
     
     func setupScene() {
@@ -231,6 +233,15 @@ class GameViewController: UIViewController {
                 let safePositionZ = safeNode.position.z + 150
                 
                 let positionTo = SCNVector3(x: safePositionX, y: safePositionY, z: safePositionZ)
+                let moveAction = SCNAction.move(to: positionTo, duration: 1)
+                cameraNode.runAction(moveAction)
+            }
+            else if(tappedNode.name == "shelf"){
+                let shelfPositionX = shelfNode.position.x - 55
+                let shelfPositionY = shelfNode.position.y + 134
+                let shelfPositionZ = shelfNode.position.z + 234
+                
+                let positionTo = SCNVector3(x: shelfPositionX, y: shelfPositionY, z: shelfPositionZ)
                 let moveAction = SCNAction.move(to: positionTo, duration: 1)
                 cameraNode.runAction(moveAction)
             }else if (tappedNode.name == "wall"){
