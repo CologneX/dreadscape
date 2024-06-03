@@ -17,14 +17,15 @@ struct DreadscapeApp: App {
     var body: some Scene {
         WindowGroup{
             Group{
-                switch self.multipeer.connectedPeer  {
-                case .some:
-                    ModernGameView(multipeer: multipeer)
-                case .none:
-                    PairingView(multipeer: multipeer)
-                }
+                //                switch self.multipeer.connectedPeer  {
+                //                case .some:
+                ModernGameView(multipeer: multipeer)
+                //                case .none:
+                //                    PairingView(multipeer: multipeer)
+                //                }
+                //            }
+                //            .animation(.default)
             }
-            .animation(.default)
         }
     }
 }
