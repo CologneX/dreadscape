@@ -16,6 +16,7 @@
 		93C632792C0BD2FA0060A78A /* ChooseDoorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C632762C0BD2FA0060A78A /* ChooseDoorView.swift */; };
 		93C6327A2C0BD2FA0060A78A /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C632772C0BD2FA0060A78A /* PairingView.swift */; };
 		93C6327D2C0BD3120060A78A /* MultipeerConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C6327B2C0BD3120060A78A /* MultipeerConnectivity.swift */; };
+		E80CF0F12C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E80CF0F02C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 */; };
 		FD5B4ADB2BFDEE8D00DB0981 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		FD5B4ADD2BFDEE8D00DB0981 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */; };
 		FD5B4ADF2BFDEE8D00DB0981 /* ModernGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5B4ADE2BFDEE8D00DB0981 /* ModernGameController.swift */; };
@@ -34,6 +35,7 @@
 		93C632772C0BD2FA0060A78A /* PairingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
 		93C6327B2C0BD3120060A78A /* MultipeerConnectivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipeerConnectivity.swift; sourceTree = "<group>"; };
 		93C6327E2C0BD5400060A78A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E80CF0F02C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "scream-grind-chord-c4-e4-ab4-d5-84850.mp3"; sourceTree = "<group>"; };
 		FD5B4AD72BFDEE8D00DB0981 /* stage2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = stage2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		FD5B4ADE2BFDEE8D00DB0981 /* ModernGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernGameController.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 				93C632752C0BD2FA0060A78A /* DreadscapeApp.swift */,
 				93C632772C0BD2FA0060A78A /* PairingView.swift */,
 				FD782DC12C09B7FF002E394E /* horror_ambience.mp3 */,
+				E80CF0F02C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 */,
 				FD5B4AE32BFDEE8E00DB0981 /* Assets.xcassets */,
 			);
 			path = stage2;
@@ -158,6 +161,7 @@
 				93C632742C0BD2500060A78A /* .gitignore in Resources */,
 				FD5B4ADD2BFDEE8D00DB0981 /* art.scnassets in Resources */,
 				FD5B4AE42BFDEE8E00DB0981 /* Assets.xcassets in Resources */,
+				E80CF0F12C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 in Resources */,
 				FD782DC22C09B7FF002E394E /* horror_ambience.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
