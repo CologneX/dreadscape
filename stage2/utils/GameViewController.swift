@@ -13,11 +13,10 @@ class GameViewController: UIViewController {
     var ghostNode: SCNNode!
     var roomNode: SCNNode!
     var lightNode: SCNNode!
-    
-    // Safe Nodes
+    var bassNode: SCNNode!
     var safeNode: SCNNode!
     var safeDoorNode: SCNNode!
-    
+
     // Position
     var isDone = false
     var isMoved = false
@@ -31,10 +30,15 @@ class GameViewController: UIViewController {
     var isLeft = 1
     var isRight = 1
     
+    //Camera Position
+    var cameraPositionStart = SCNVector3(x: -1.176, y: 119.345, z: 31.818)
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupScene()
         setupNode()
+        setupCamera()
         setupGestures()
 //        setUpAudioCapture()
         playAmbience()
@@ -46,8 +50,9 @@ class GameViewController: UIViewController {
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
         roomNode = scene.rootNode.childNode(withName: "Room2 reference", recursively: true)!
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
-        //        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
-        //        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
+        bassNode = scene.rootNode.childNode(withName: "bass reference", recursively: false)
+        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
+        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
     }
     
     func setupScene() {
@@ -60,6 +65,9 @@ class GameViewController: UIViewController {
         // Add the SCNView to the view controller's view
         self.view.addSubview(sceneView)
         
+       
+        
+        
         let tapRecognizer = UITapGestureRecognizer()
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.numberOfTouchesRequired = 1
@@ -68,6 +76,11 @@ class GameViewController: UIViewController {
         sceneView.addGestureRecognizer(tapRecognizer)
     }
     
+    func setupCamera() {
+        //Camera Position Start
+        let cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        
+    }
     
     func playAmbience() {
         let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
@@ -85,10 +98,6 @@ class GameViewController: UIViewController {
             AVAudioApplication.requestRecordPermission(completionHandler: {
                 response in print(response)
             })
-            //            recordingSession.requestRecordPermission({ result in
-            //
-            //                guard result else { return }
-            //            })
             captureAudio()
         } catch {
             print("Error: Failed to set up recording session.")
@@ -197,12 +206,39 @@ class GameViewController: UIViewController {
     }
     
     @objc func sceneViewTapped(recognizer: UITapGestureRecognizer) {
+        
+        
+        
         let p = recognizer.location(in: sceneView)
         let hitResults = sceneView.hitTest(p, options: [:])
         
         if let hitResult = hitResults.first {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
+            
+            
+            //Check What Tapped
+            if(tappedNode.name == "bass1" || tappedNode.name == "bass2"){
+                let bassPositionX = bassNode.position.x
+                let bassPositionY = bassNode.position.y
+                let bassPositionZ = bassNode.position.z + 150
+                
+                let positionTo = SCNVector3(x: bassPositionX, y: bassPositionY, z: bassPositionZ)
+                let moveAction = SCNAction.move(to: positionTo, duration: 1)
+                cameraNode.runAction(moveAction)
+            } else if(tappedNode.name == "stool1" || tappedNode.name == "stool2" || tappedNode.name == "safe"){
+                let safePositionX = safeNode.position.x
+                let safePositionY = safeNode.position.y
+                let safePositionZ = safeNode.position.z + 150
+                
+                let positionTo = SCNVector3(x: safePositionX, y: safePositionY, z: safePositionZ)
+                let moveAction = SCNAction.move(to: positionTo, duration: 1)
+                cameraNode.runAction(moveAction)
+            }else if (tappedNode.name == "wall"){
+                let moveAction = SCNAction.move(to: cameraPositionStart, duration: 1)
+                cameraNode.runAction(moveAction)
+            }
+            
         }
     }
     
