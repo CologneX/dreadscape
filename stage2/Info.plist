@@ -7,5 +7,13 @@
 		<string>_dreadscape._tcp</string>
 		<string>_dreadscape._udp</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>CormorantUpright-Bold.ttf</string>
+		<string>CormorantUpright-Medium.ttf</string>
+		<string>CormorantUpright-Light.ttf</string>
+		<string>CormorantUpright-Regular.ttf</string>
+		<string>CormorantUpright-SemiBold.ttf</string>
+	</array>
 </dict>
 </plist>
