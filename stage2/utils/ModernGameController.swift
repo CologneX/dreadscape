@@ -16,6 +16,7 @@ class ModernGameController: UIViewController {
     var safeNode: SCNNode!
     var safeDoorNode: SCNNode!
     var shelfNode: SCNNode!
+    var jumpscareNode: SCNNode!
 
     // Position
     var isDone = false
@@ -33,9 +34,12 @@ class ModernGameController: UIViewController {
     //Camera Position
     var cameraPositionStart = SCNVector3(x: -3.801, y: 137.466, z: 103.739)
     
-    
     // Multipeer Connectivity Manager
     var multipeerManager: MultipeerManager!
+    
+    //Player Lives and State
+    var playerLives = 3
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +47,10 @@ class ModernGameController: UIViewController {
         setupScene()
         setupNode()
         setupCamera()
+        setupJumpscare()
         setupGestures()
-//        setUpAudioCapture()
-        playAmbience()
+        setUpAudioCapture()
+//        playAmbience()
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleGameStateChange(_:)), name: .gameStateDidChange, object: nil)
     }
@@ -63,8 +68,9 @@ class ModernGameController: UIViewController {
         cameraNode = scene.rootNode.childNode(withName: "camera", recursively: true)!
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
         roomNode = scene.rootNode.childNode(withName: "Room2 reference", recursively: true)!
-        lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         bassNode = scene.rootNode.childNode(withName: "bass reference", recursively: false)
+        lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
+        jumpscareNode = scene.rootNode.childNode(withName: "kepalaMonster", recursively: true)!
         safeNode = scene.rootNode.childNode(withName: "Safe reference", recursively: true)!
         shelfNode = scene.rootNode.childNode(withName: "shelf reference", recursively: true)!
     }
@@ -76,10 +82,9 @@ class ModernGameController: UIViewController {
         
         sceneView.scene = scene
         
+        
         // Add the SCNView to the view controller's view
         self.view.addSubview(sceneView)
-        
-       
         
         
         let tapRecognizer = UITapGestureRecognizer()
@@ -94,9 +99,31 @@ class ModernGameController: UIViewController {
         //Camera Position Start
         let cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
         
+        //Set Camera Light
+        cameraNode.light = SCNLight()
+        cameraNode.light!.type = .spot
+        cameraNode.light?.intensity = 700
+        cameraNode.light?.spotInnerAngle = 0
+        cameraNode.light?.spotOuterAngle = 120.0
+        print(cameraNode.light?.spotOuterAngle.description)
+        
+        
+    }
+    
+    func setupJumpscare(){
+        jumpscareNode.light = SCNLight()
+        jumpscareNode.light?.type = .omni
+        jumpscareNode.light?.intensity = 0
     }
     
     func playAmbience() {
+        let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
+        player = try! AVAudioPlayer(contentsOf: url!)
+        player.volume = 1.0
+        player.play()
+    }
+    
+    func playStep() {
         let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
         player = try! AVAudioPlayer(contentsOf: url!)
         player.volume = 1.0
@@ -137,11 +164,12 @@ class ModernGameController: UIViewController {
             audioRecorder.record()
             audioRecorder.isMeteringEnabled = true
             
-            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
+            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
-                
-                if self.db > -13 {
+                print(self.db)
+                if self.db > -12 {
+                    
                     self.audioTriggered()
                     print("Triggered")
                 }
@@ -149,6 +177,35 @@ class ModernGameController: UIViewController {
         } catch {
             print("ERROR: Failed to start recording process.")
         }
+    }
+    
+    func playScream(){
+        if let source = SCNAudioSource(fileNamed: "art.scnassets/Audio/scream.mp3") {
+            let action = SCNAction.playAudio(source, waitForCompletion: false)
+            jumpscareNode.runAction(action)
+        } else {
+            print("Cannot find the audio file.")
+        }
+    }
+    
+    func playerJumpscare(){
+        
+        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 1)
+
+        
+        fallAndFade2("test")
+        
+        let moveJumpscare = SCNAction.move(to: jumpscarePosition, duration: 0.09)
+        playScream()
+        moveJumpscare.timingMode = .easeInEaseOut
+        jumpscareNode.runAction(moveJumpscare)
+        
+        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.04)
+        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.04)
+
+        
+        jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
+        
     }
     
     @objc func rotateCameraLeft() {
@@ -277,13 +334,21 @@ class ModernGameController: UIViewController {
     
     func audioTriggered() {
 
+        if(playerLives > 0){
+            fallAndFade(cameraNode)
+            print(cameraNode.light?.spotOuterAngle)
+            playerLives -= 1
+        } else {
+            playerJumpscare()
+        }
+        
         let playerPosition = cameraNode.position
         print("ghost: \(ghostNode.position)")
         print("player: \(cameraNode.position)")
         
         moveObjectToPlayerPosition()
         
-        multipeerManager.changeGameState("moveObjectToPlayerPosition")
+//        multipeerManager.changeGameState("moveObjectToPlayerPosition")
     }
     
     func openSafeDoor() {
@@ -300,5 +365,14 @@ class ModernGameController: UIViewController {
         gearRotationAction.timingMode = .easeInEaseOut
         
         self.safeDoorNode.runAction(rotateAction)
+    }
+    
+    @IBAction func fallAndFade(_ sender: Any) {
+        SCNTransaction.animationDuration = 1.0
+        cameraNode.light?.spotOuterAngle -= 30
+    }
+    @IBAction func fallAndFade2(_ sender: Any) {
+        SCNTransaction.animationDuration = 0.0001
+        cameraNode.light?.spotOuterAngle = 120
     }
 }
