@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		93047FEB2C0EF558006F9B0B /* CormorantUpright-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE52C0EF558006F9B0B /* CormorantUpright-Bold.ttf */; };
+		93047FEC2C0EF558006F9B0B /* CormorantUpright-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE62C0EF558006F9B0B /* CormorantUpright-Light.ttf */; };
+		93047FED2C0EF558006F9B0B /* CormorantUpright-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE72C0EF558006F9B0B /* CormorantUpright-Medium.ttf */; };
+		93047FEE2C0EF558006F9B0B /* CormorantUpright-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE82C0EF558006F9B0B /* CormorantUpright-Regular.ttf */; };
+		93047FEF2C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE92C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf */; };
 		93AFC5892C0C665300CA671A /* ModernGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AFC5882C0C665300CA671A /* ModernGameView.swift */; };
 		93AFC58A2C0CBFD400CA671A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AFC5862C0C63BC00CA671A /* AppDelegate.swift */; };
 		93AFC58C2C0D653000CA671A /* AstralGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AFC58B2C0D653000CA671A /* AstralGameController.swift */; };
@@ -25,6 +30,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		93047FE52C0EF558006F9B0B /* CormorantUpright-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-Bold.ttf"; sourceTree = "<group>"; };
+		93047FE62C0EF558006F9B0B /* CormorantUpright-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-Light.ttf"; sourceTree = "<group>"; };
+		93047FE72C0EF558006F9B0B /* CormorantUpright-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-Medium.ttf"; sourceTree = "<group>"; };
+		93047FE82C0EF558006F9B0B /* CormorantUpright-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-Regular.ttf"; sourceTree = "<group>"; };
+		93047FE92C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-SemiBold.ttf"; sourceTree = "<group>"; };
 		93AFC5862C0C63BC00CA671A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93AFC5882C0C665300CA671A /* ModernGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernGameView.swift; sourceTree = "<group>"; };
 		93AFC58B2C0D653000CA671A /* AstralGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AstralGameController.swift; sourceTree = "<group>"; };
@@ -54,6 +64,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		93047FE42C0EF538006F9B0B /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				93047FEA2C0EF558006F9B0B /* Cormorant_Upright */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		93047FEA2C0EF558006F9B0B /* Cormorant_Upright */ = {
+			isa = PBXGroup;
+			children = (
+				93047FE52C0EF558006F9B0B /* CormorantUpright-Bold.ttf */,
+				93047FE62C0EF558006F9B0B /* CormorantUpright-Light.ttf */,
+				93047FE72C0EF558006F9B0B /* CormorantUpright-Medium.ttf */,
+				93047FE82C0EF558006F9B0B /* CormorantUpright-Regular.ttf */,
+				93047FE92C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf */,
+			);
+			path = Cormorant_Upright;
+			sourceTree = "<group>";
+		};
 		93C6327C2C0BD3120060A78A /* utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +115,7 @@
 		FD5B4AD92BFDEE8D00DB0981 /* stage2 */ = {
 			isa = PBXGroup;
 			children = (
+				93047FE42C0EF538006F9B0B /* fonts */,
 				93C6327E2C0BD5400060A78A /* Info.plist */,
 				93C6327C2C0BD3120060A78A /* utils */,
 				FD5B4ADC2BFDEE8D00DB0981 /* art.scnassets */,
@@ -162,7 +193,12 @@
 				FD5B4ADD2BFDEE8D00DB0981 /* art.scnassets in Resources */,
 				FD5B4AE42BFDEE8E00DB0981 /* Assets.xcassets in Resources */,
 				E80CF0F12C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 in Resources */,
+				93047FEE2C0EF558006F9B0B /* CormorantUpright-Regular.ttf in Resources */,
+				93047FEC2C0EF558006F9B0B /* CormorantUpright-Light.ttf in Resources */,
+				93047FED2C0EF558006F9B0B /* CormorantUpright-Medium.ttf in Resources */,
 				FD782DC22C09B7FF002E394E /* horror_ambience.mp3 in Resources */,
+				93047FEB2C0EF558006F9B0B /* CormorantUpright-Bold.ttf in Resources */,
+				93047FEF2C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
