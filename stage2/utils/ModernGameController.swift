@@ -302,3 +302,4 @@ class ModernGameController: UIViewController {
         self.safeDoorNode.runAction(rotateAction)
     }
 }
+
