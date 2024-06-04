@@ -376,6 +376,3 @@ class ModernGameController: UIViewController {
         cameraNode.light?.spotOuterAngle = 120
     }
 }
-
-    
-
