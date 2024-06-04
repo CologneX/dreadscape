@@ -6,9 +6,42 @@
 //
 
 import SwiftUI
-
+import AVFoundation
+class SoundManager {
+    static let instance = SoundManager()
+    var typewriterClick1: AVAudioPlayer?
+    var typewriterClick2: AVAudioPlayer?
+    var typewriterConfirm: AVAudioPlayer?
+    init() {
+        let click1URL = Bundle.main.url(forResource: "typewriterClick1", withExtension: "mp3")
+        let click2URL = Bundle.main.url(forResource: "typewriterClick2", withExtension: "mp3")
+        let clickConfirmURL = Bundle.main.url(forResource: "typewriterConfirm", withExtension: "mp3")
+        if let click1URL = click1URL, let click2URL = click2URL, let clickConfirmURL = clickConfirmURL {
+            do {
+                typewriterClick1 = try AVAudioPlayer(contentsOf: click1URL)
+                typewriterClick2 = try AVAudioPlayer(contentsOf: click2URL)
+                typewriterConfirm = try AVAudioPlayer(contentsOf: clickConfirmURL)
+            } catch {
+                print("Error loading sound files.")
+            }
+        }
+    }
+    
+    func playRandomClick() {
+        let random = Bool.random()
+        if random {
+            typewriterClick1?.play()
+        } else {
+            typewriterClick2?.play()
+        }
+    }
+    func playConfirmClick(){
+        typewriterConfirm?.play()
+    }
+}
 struct PairingView: View {
     @ObservedObject var multipeer: MultipeerManager
+    let buttonImages = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "keyBlank", "keyCancel", "keyConfirm"]
     @State var pairingCode: String = ""
     private func appendCode(_ code: String){
         if pairingCode.count < 6 {
@@ -19,133 +52,160 @@ struct PairingView: View {
         self.multipeer.pairingCode = pairingCode
         self.multipeer.activate()
     }
+    
     var body: some View {
-        // Numeric Buttons
-        NavigationStack{
-            Text(pairingCode)
-                .font(.title)
-                .padding()
-                .bold()
-            Text("\(self.multipeer.$connectedPeer)")
-            VStack{
-                HStack{
-                    Button(action: {
-                        self.appendCode("1")
-                    }, label: {
-                        Text("1")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                    Button(action: {
-                        self.appendCode("2")
-                    }, label: {
-                        Text("2")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                    Button(action: {
-                        self.appendCode("3")
-                    }, label: {
-                        Text("3")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
+        NavigationStack {
+            GeometryReader { geometry in
+                let buttonSize = geometry.size.width / 10 // Adjust the divisor to change button size ratio
+                
+                VStack {
+                    Spacer()
+                    ZStack(alignment: .topLeading) {
+                        Image("KeyboardTextField")
+                            .resizable()
+                            .frame(maxWidth: .infinity, maxHeight: buttonSize * 2)
+                        Text(pairingCode)
+                            .foregroundStyle(.black)
+                            .bold()
+                            .font(.custom("Cormorant Upright", size: buttonSize))
+                            .frame(maxWidth: .infinity, maxHeight: buttonSize / 2)
+                    }
+                    Spacer()
+                    VStack {
+                        HStack(spacing: buttonSize / 5) {
+                            Button {
+                                self.appendCode("1")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("1")
+                                    .resizable()
+                                    .frame(width: buttonSize , height: buttonSize )
+                            }
+                            .offset(y: -buttonSize)
+                            
+                            Button {
+                                self.appendCode("2")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("2")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize / 2)
+                            Button {
+                                self.appendCode("3")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("3")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize / 4)
+                            Button {
+                                self.appendCode("4")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("4")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize / 2)
+                            Button {
+                                self.appendCode("5")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("5")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize)
+                        }
+                        HStack(spacing: buttonSize / 5) {
+                            Button {
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("keyBlank")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize * 1.25)
+                            Button {
+                                self.appendCode("6")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("6")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize * 0.75)
+                            Button {
+                                self.appendCode("7")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("7")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize / 4)
+                            Button {
+                                self.appendCode("8")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("8")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            Button {
+                                self.appendCode("9")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("9")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize / 4)
+                            Button {
+                                self.appendCode("0")
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("0")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize * 0.75)
+                            Button {
+                                if pairingCode.count > 0 {
+                                    pairingCode.removeLast()
+                                }
+                                SoundManager.instance.playRandomClick()
+                            } label: {
+                                Image("keyCancel")
+                                    .resizable()
+                                    .frame(width: buttonSize, height: buttonSize)
+                            }
+                            .offset(y: -buttonSize * 1.25)
+                        }
+                    }
+                    Button {
+                        SoundManager.instance.playConfirmClick()
+                        submitPasscodeMultipeer()
+                    } label: {
+                        Image("keyConfirm")
+                            .resizable()
+                            .frame(maxWidth: .infinity, maxHeight: buttonSize)
+                    }
+                    .padding(.horizontal, buttonSize)
+                    Spacer()
                 }
-                HStack{
-                    Button(action: {
-                        self.appendCode("4")
-                    }, label: {
-                        Text("4")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                    Button(action: {
-                        self.appendCode("5")
-                    }, label: {
-                        Text("5")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                    Button(action: {
-                        self.appendCode("6")
-                    }, label: {
-                        Text("6")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                }
-                HStack{
-                    Button(action: {
-                        self.appendCode("7")
-                    }, label: {
-                        Text("7")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                    Button(action: {
-                        self.appendCode("8")
-                    }, label: {
-                        Text("8")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                    Button(action: {
-                        self.appendCode("9")
-                    }, label: {
-                        Text("9")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                    Button(action: {
-                        self.appendCode("0")
-                    }, label: {
-                        Text("0")
-                            .font(.title)
-                            .frame(width: 100, height: 100)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(50)
-                    })
-                }
-                Button(action: {
-                    submitPasscodeMultipeer()
-                }, label: {
-                    Text("Enter")
-                        .font(.title)
-                        .frame(width: 100, height: 100)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(50)
-                })
+                .padding(.horizontal, buttonSize)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black)
+                .ignoresSafeArea(.all)
             }
         }
-        
     }
+}
+
+#Preview {
+    PairingView(multipeer: MultipeerManager(), pairingCode: "7")
 }

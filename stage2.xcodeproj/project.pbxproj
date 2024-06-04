@@ -12,6 +12,9 @@
 		93047FED2C0EF558006F9B0B /* CormorantUpright-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE72C0EF558006F9B0B /* CormorantUpright-Medium.ttf */; };
 		93047FEE2C0EF558006F9B0B /* CormorantUpright-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE82C0EF558006F9B0B /* CormorantUpright-Regular.ttf */; };
 		93047FEF2C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93047FE92C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf */; };
+		93047FFF2C0F1A00006F9B0B /* typewriterClick1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 93047FFD2C0F1A00006F9B0B /* typewriterClick1.mp3 */; };
+		930480002C0F1A00006F9B0B /* typewriterClick2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 93047FFE2C0F1A00006F9B0B /* typewriterClick2.mp3 */; };
+		930480022C0F1C88006F9B0B /* typewriterConfirm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 930480012C0F1C88006F9B0B /* typewriterConfirm.mp3 */; };
 		93AFC5892C0C665300CA671A /* ModernGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AFC5882C0C665300CA671A /* ModernGameView.swift */; };
 		93AFC58A2C0CBFD400CA671A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AFC5862C0C63BC00CA671A /* AppDelegate.swift */; };
 		93AFC58C2C0D653000CA671A /* AstralGameController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AFC58B2C0D653000CA671A /* AstralGameController.swift */; };
@@ -35,6 +38,9 @@
 		93047FE72C0EF558006F9B0B /* CormorantUpright-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-Medium.ttf"; sourceTree = "<group>"; };
 		93047FE82C0EF558006F9B0B /* CormorantUpright-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-Regular.ttf"; sourceTree = "<group>"; };
 		93047FE92C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantUpright-SemiBold.ttf"; sourceTree = "<group>"; };
+		93047FFD2C0F1A00006F9B0B /* typewriterClick1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = typewriterClick1.mp3; sourceTree = "<group>"; };
+		93047FFE2C0F1A00006F9B0B /* typewriterClick2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = typewriterClick2.mp3; sourceTree = "<group>"; };
+		930480012C0F1C88006F9B0B /* typewriterConfirm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = typewriterConfirm.mp3; sourceTree = "<group>"; };
 		93AFC5862C0C63BC00CA671A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93AFC5882C0C665300CA671A /* ModernGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernGameView.swift; sourceTree = "<group>"; };
 		93AFC58B2C0D653000CA671A /* AstralGameController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AstralGameController.swift; sourceTree = "<group>"; };
@@ -84,6 +90,16 @@
 			path = Cormorant_Upright;
 			sourceTree = "<group>";
 		};
+		93047FF02C0F13CF006F9B0B /* typewriterAssets */ = {
+			isa = PBXGroup;
+			children = (
+				930480012C0F1C88006F9B0B /* typewriterConfirm.mp3 */,
+				93047FFD2C0F1A00006F9B0B /* typewriterClick1.mp3 */,
+				93047FFE2C0F1A00006F9B0B /* typewriterClick2.mp3 */,
+			);
+			path = typewriterAssets;
+			sourceTree = "<group>";
+		};
 		93C6327C2C0BD3120060A78A /* utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -115,6 +131,7 @@
 		FD5B4AD92BFDEE8D00DB0981 /* stage2 */ = {
 			isa = PBXGroup;
 			children = (
+				93047FF02C0F13CF006F9B0B /* typewriterAssets */,
 				93047FE42C0EF538006F9B0B /* fonts */,
 				93C6327E2C0BD5400060A78A /* Info.plist */,
 				93C6327C2C0BD3120060A78A /* utils */,
@@ -191,12 +208,15 @@
 			files = (
 				93C632742C0BD2500060A78A /* .gitignore in Resources */,
 				FD5B4ADD2BFDEE8D00DB0981 /* art.scnassets in Resources */,
+				93047FFF2C0F1A00006F9B0B /* typewriterClick1.mp3 in Resources */,
 				FD5B4AE42BFDEE8E00DB0981 /* Assets.xcassets in Resources */,
 				E80CF0F12C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 in Resources */,
+				930480002C0F1A00006F9B0B /* typewriterClick2.mp3 in Resources */,
 				93047FEE2C0EF558006F9B0B /* CormorantUpright-Regular.ttf in Resources */,
 				93047FEC2C0EF558006F9B0B /* CormorantUpright-Light.ttf in Resources */,
 				93047FED2C0EF558006F9B0B /* CormorantUpright-Medium.ttf in Resources */,
 				FD782DC22C09B7FF002E394E /* horror_ambience.mp3 in Resources */,
+				930480022C0F1C88006F9B0B /* typewriterConfirm.mp3 in Resources */,
 				93047FEB2C0EF558006F9B0B /* CormorantUpright-Bold.ttf in Resources */,
 				93047FEF2C0EF558006F9B0B /* CormorantUpright-SemiBold.ttf in Resources */,
 			);
