@@ -41,6 +41,9 @@ class ModernGameController: UIViewController {
     var playerLives = 3
     var isJumpscared = false
     
+    //Safe
+    var isOpen = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -314,7 +317,14 @@ class ModernGameController: UIViewController {
                 let positionTo = SCNVector3(x: shelfPositionX, y: shelfPositionY, z: shelfPositionZ)
                 let moveAction = SCNAction.move(to: positionTo, duration: 1)
                 cameraNode.runAction(moveAction)
-            }else if (tappedNode.name == "wall"){
+            }else if(tappedNode.name == "Hinge" || tappedNode.name == "Safe"){
+                if (isOpen == true){
+                    closeSafeDoor()
+                } else {
+                    openSafeDoor()
+                }
+            }
+            else if (tappedNode.name == "wall"){
                 let moveAction = SCNAction.move(to: cameraPositionStart, duration: 1)
                 cameraNode.runAction(moveAction)
             }
@@ -378,6 +388,6 @@ class ModernGameController: UIViewController {
     }
     @IBAction func fallAndFade2(_ sender: Any) {
         SCNTransaction.animationDuration = 0.0001
-        cameraNode.light?.spotOuterAngle = 60
+        cameraNode.light?.spotOuterAngle = 90
     }
 }
