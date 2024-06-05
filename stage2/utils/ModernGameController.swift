@@ -60,6 +60,7 @@ class ModernGameController: UIViewController {
         if let gameState = notification.object as? String {
             if gameState == "moveObjectToPlayerPosition" {
                 moveObjectToPlayerPosition()
+                playerJumpscare()
             }
         }
     }
@@ -72,7 +73,7 @@ class ModernGameController: UIViewController {
         bassNode = scene.rootNode.childNode(withName: "bass reference", recursively: false)
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         jumpscareNode = scene.rootNode.childNode(withName: "kepalaMonster", recursively: true)!
-        safeNode = scene.rootNode.childNode(withName: "Safe reference", recursively: true)!
+        safeNode = scene.rootNode.childNode(withName: "safe reference", recursively: true)!
         shelfNode = scene.rootNode.childNode(withName: "shelf reference", recursively: true)!
     }
     
@@ -192,7 +193,7 @@ class ModernGameController: UIViewController {
     func playerJumpscare(){
         isJumpscared = true
         let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 1)
-
+        
         
         fallAndFade2("test")
         
@@ -335,7 +336,7 @@ class ModernGameController: UIViewController {
     }
     
     func audioTriggered() {
-
+        multipeerManager.changeGameState("moveObjectToPlayerPosition")
         if(playerLives > 0){
             fallAndFade(cameraNode)
             print(cameraNode.light?.spotOuterAngle)
@@ -353,7 +354,6 @@ class ModernGameController: UIViewController {
         
         moveObjectToPlayerPosition()
         
-//        multipeerManager.changeGameState("moveObjectToPlayerPosition")
     }
     
     func openSafeDoor() {
