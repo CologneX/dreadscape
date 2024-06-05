@@ -169,7 +169,7 @@ class ModernGameController: UIViewController {
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
                 print(self.db)
-                if self.db > -12 {
+                if self.db > -13 {
                     
                     self.audioTriggered()
                     print("Triggered")
@@ -202,8 +202,8 @@ class ModernGameController: UIViewController {
         moveJumpscare.timingMode = .easeInEaseOut
         jumpscareNode.runAction(moveJumpscare)
         
-        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
-        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
+        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 4)), z: 0, duration: 0.001)
+        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 4)), z: 0, duration: 0.001)
 
         
         jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
@@ -378,6 +378,6 @@ class ModernGameController: UIViewController {
     }
     @IBAction func fallAndFade2(_ sender: Any) {
         SCNTransaction.animationDuration = 0.0001
-        cameraNode.light?.spotOuterAngle = 120
+        cameraNode.light?.spotOuterAngle = 60
     }
 }
