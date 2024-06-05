@@ -207,7 +207,6 @@
 				FD5B4ADD2BFDEE8D00DB0981 /* art.scnassets in Resources */,
 				93047FFF2C0F1A00006F9B0B /* typewriterClick1.mp3 in Resources */,
 				FD5B4AE42BFDEE8E00DB0981 /* Assets.xcassets in Resources */,
-				E80CF0F12C0DDFA700FACE6C /* scream-grind-chord-c4-e4-ab4-d5-84850.mp3 in Resources */,
 				930480002C0F1A00006F9B0B /* typewriterClick2.mp3 in Resources */,
 				93047FEE2C0EF558006F9B0B /* CormorantUpright-Regular.ttf in Resources */,
 				93047FEC2C0EF558006F9B0B /* CormorantUpright-Light.ttf in Resources */,
@@ -368,7 +367,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3K8JGLP9HY;
+				DEVELOPMENT_TEAM = KNP937X993;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = stage2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dreadscape;
@@ -406,7 +405,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3K8JGLP9HY;
+				DEVELOPMENT_TEAM = KNP937X993;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = stage2/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Dreadscape;
