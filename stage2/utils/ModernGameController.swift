@@ -39,6 +39,7 @@ class ModernGameController: UIViewController {
     
     //Player Lives and State
     var playerLives = 3
+    var isJumpscared = false
     
     
     override func viewDidLoad() {
@@ -189,19 +190,20 @@ class ModernGameController: UIViewController {
     }
     
     func playerJumpscare(){
-        
+        isJumpscared = true
         let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 1)
 
         
         fallAndFade2("test")
         
+        SCNAction.wait(duration: 3)
         let moveJumpscare = SCNAction.move(to: jumpscarePosition, duration: 0.09)
         playScream()
         moveJumpscare.timingMode = .easeInEaseOut
         jumpscareNode.runAction(moveJumpscare)
         
-        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.04)
-        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.04)
+        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
+        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
 
         
         jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
@@ -339,7 +341,10 @@ class ModernGameController: UIViewController {
             print(cameraNode.light?.spotOuterAngle)
             playerLives -= 1
         } else {
-            playerJumpscare()
+            if(isJumpscared == false){
+                playerJumpscare()
+            }
+            
         }
         
         let playerPosition = cameraNode.position
