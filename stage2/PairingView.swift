@@ -7,38 +7,54 @@
 
 import SwiftUI
 import AVFoundation
+
 class SoundManager {
     static let instance = SoundManager()
-    var typewriterClick1: AVAudioPlayer?
-    var typewriterClick2: AVAudioPlayer?
-    var typewriterConfirm: AVAudioPlayer?
+    
+    private var audioPlayers: [AVAudioPlayer] = []
+    
     init() {
         let click1URL = Bundle.main.url(forResource: "typewriterClick1", withExtension: "mp3")
         let click2URL = Bundle.main.url(forResource: "typewriterClick2", withExtension: "mp3")
         let clickConfirmURL = Bundle.main.url(forResource: "typewriterConfirm", withExtension: "mp3")
+        
         if let click1URL = click1URL, let click2URL = click2URL, let clickConfirmURL = clickConfirmURL {
             do {
-                typewriterClick1 = try AVAudioPlayer(contentsOf: click1URL)
-                typewriterClick2 = try AVAudioPlayer(contentsOf: click2URL)
-                typewriterConfirm = try AVAudioPlayer(contentsOf: clickConfirmURL)
+                let player1 = try AVAudioPlayer(contentsOf: click1URL)
+                let player2 = try AVAudioPlayer(contentsOf: click2URL)
+                let playerConfirm = try AVAudioPlayer(contentsOf: clickConfirmURL)
+                
+                audioPlayers.append(player1)
+                audioPlayers.append(player2)
+                audioPlayers.append(playerConfirm)
+                
             } catch {
                 print("Error loading sound files.")
             }
         }
     }
     
-    func playRandomClick() {
-        let random = Bool.random()
-        if random {
-            typewriterClick1?.play()
-        } else {
-            typewriterClick2?.play()
-        }
+    private func playSound(_ sound: AVAudioPlayer) {
+        sound.prepareToPlay()
+        sound.play()
     }
-    func playConfirmClick(){
-        typewriterConfirm?.play()
+    
+    func playRandomClick() {
+        let randomIndex = Int.random(in: 0...1)
+        let sound = audioPlayers[randomIndex]
+        let newPlayer = try! AVAudioPlayer(contentsOf: sound.url!)
+        audioPlayers.append(newPlayer)
+        playSound(newPlayer)
+    }
+    
+    func playConfirmClick() {
+        let sound = audioPlayers[2]
+        let newPlayer = try! AVAudioPlayer(contentsOf: sound.url!)
+        audioPlayers.append(newPlayer)
+        playSound(newPlayer)
     }
 }
+
 struct PairingView: View {
     @ObservedObject var multipeer: MultipeerManager
     let buttonImages = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "keyBlank", "keyCancel", "keyConfirm"]
