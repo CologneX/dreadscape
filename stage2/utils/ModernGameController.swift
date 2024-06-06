@@ -239,7 +239,7 @@ class ModernGameController: UIViewController {
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
                 print(self.db)
-                if self.db > -5 {
+                if self.db > -14 {
                     
                     self.audioTriggered()
                     print("Triggered")
@@ -274,8 +274,8 @@ class ModernGameController: UIViewController {
         jumpscareNode.runAction(moveJumpscare)
         playScream()
         
-        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
-        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
+        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
+        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
 
         
         jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
@@ -392,71 +392,73 @@ class ModernGameController: UIViewController {
             }
             
                     
-            let material = SCNMaterial()
-            let material3 = SCNMaterial()
-            let material4 = SCNMaterial()
-            let material5 = SCNMaterial()
-            let material6 = SCNMaterial()
-            let material7 = SCNMaterial()
-            let material8 = SCNMaterial()
-            let material9 = SCNMaterial()
+            var material = SCNMaterial()
+            var material3 = SCNMaterial()
+            var material4 = SCNMaterial()
+            var material5 = SCNMaterial()
+            var material6 = SCNMaterial()
+            var material7 = SCNMaterial()
+            var material8 = SCNMaterial()
+            var material9 = SCNMaterial()
             
-            let material1Indicator = SCNMaterial()
-            let material2Indicator = SCNMaterial()
-            let material3Indicator = SCNMaterial()
-            let material4Indicator = SCNMaterial()
+            var material1Indicator = SCNMaterial()
+            var material2Indicator = SCNMaterial()
+            var material3Indicator = SCNMaterial()
+            var material4Indicator = SCNMaterial()
             
             if(tappedNode.name == "symbol1Slot"){
                 selectedSlot = symbol1Slot
                 selectedSlotNumber = 0
                 
+                material1Indicator.diffuse.contents = UIColor(named: "#0057e7")
+                symbol1Indicator.geometry?.materials = [material1Indicator]
                 
-                material2Indicator.reflective.contents = UIColor.white
+                material2Indicator.diffuse.contents = UIColor(named: "#0057e7")
                 symbol2Indicator.geometry?.materials = [material2Indicator]
                 
                 
-                material3Indicator.reflective.contents = UIColor.white
+                material3Indicator.diffuse.contents = UIColor(named: "#008744")
                 symbol3Indicator.geometry?.materials = [material3Indicator]
                 
                 
-                material4Indicator.reflective.contents = UIColor.white
+                material4Indicator.diffuse.contents = UIColor(named:"#f9d62e")
                 symbol4Indicator.geometry?.materials = [material4Indicator]
             } else if (tappedNode.name == "symbol2Slot"){
                 selectedSlot = symbol2Slot
                 selectedSlotNumber = 1
                 
-                material1Indicator.reflective.contents = UIColor.white
+                material1Indicator.diffuse.contents = UIColor(named: "#d62d20")
                 symbol1Indicator.geometry?.materials = [material1Indicator]
                 
-                material3Indicator.reflective.contents = UIColor.white
+                material3Indicator.diffuse.contents = UIColor(named: "#008744")
                 symbol3Indicator.geometry?.materials = [material3Indicator]
                 
-                material4Indicator.reflective.contents = UIColor.white
+                material4Indicator.diffuse.contents = UIColor(named:"#f9d62e")
                 symbol4Indicator.geometry?.materials = [material4Indicator]
             } else if (tappedNode.name == "symbol3Slot"){
                 selectedSlot = symbol3Slot
                 selectedSlotNumber = 2
                 
-                material1Indicator.reflective.contents = UIColor.white
+                material1Indicator.diffuse.contents = UIColor(named: "#d62d20")
                 symbol1Indicator.geometry?.materials = [material1Indicator]
                 
-                material2Indicator.reflective.contents = UIColor.white
+                material2Indicator.diffuse.contents = UIColor(named: "#0057e7")
                 symbol2Indicator.geometry?.materials = [material2Indicator]
                 
                 
-                material4Indicator.reflective.contents = UIColor.white
+                material4Indicator.diffuse.contents = UIColor(named:"#f9d62e")
                 symbol4Indicator.geometry?.materials = [material4Indicator]
             } else if (tappedNode.name == "symbol4Slot"){
                 selectedSlot = symbol4Slot
                 selectedSlotNumber = 3
                 
-                material1Indicator.reflective.contents = UIColor.white
+                material1Indicator.diffuse.contents = UIColor(named: "#d62d20")
                 symbol1Indicator.geometry?.materials = [material1Indicator]
                 
-                material2Indicator.reflective.contents = UIColor.white
+                material2Indicator.diffuse.contents = UIColor(named: "#0057e7")
                 symbol2Indicator.geometry?.materials = [material2Indicator]
                 
-                material3Indicator.reflective.contents = UIColor.white
+                material3Indicator.diffuse.contents = UIColor(named: "#008744")
                 symbol3Indicator.geometry?.materials = [material3Indicator]
                 
             }
@@ -541,13 +543,15 @@ class ModernGameController: UIViewController {
     }
     
     func audioTriggered() {
-        multipeerManager.changeGameState("moveObjectToPlayerPosition")
+        
         if(playerLives > 0){
-            fallAndFade(cameraNode ?? cameraNode)
+            fallAndFade(cameraNode)
             playerLives -= 1
         } else {
             if(isJumpscared == false){
                 playerJumpscare()
+                isJumpscared = true
+                multipeerManager.changeGameState("moveObjectToPlayerPosition")
             }
             
         }
@@ -587,7 +591,7 @@ class ModernGameController: UIViewController {
     }
     @IBAction func fallAndFade2(_ sender: Any) {
         SCNTransaction.animationDuration = 0.001
-        cameraNode.light?.spotOuterAngle = 60
+        cameraNode.light?.spotOuterAngle = 90
     }
     
     @IBAction func fallAndFade3(_ sender: Any) {
@@ -597,6 +601,3 @@ class ModernGameController: UIViewController {
     
 }
 
-#Preview(){
-    ModernGameController()
-}
