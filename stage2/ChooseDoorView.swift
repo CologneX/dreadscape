@@ -7,6 +7,7 @@
 //
 import SwiftUI
 struct ChooseDoorView: View {
+    @Binding var chosenWorld: ChosenWorld?
     var body: some View {
         ZStack{
             VStack{
@@ -15,15 +16,25 @@ struct ChooseDoorView: View {
                     .scaledToFit()
                     .padding(.horizontal, 128)
                 HStack(alignment: .bottom){
-                    Image("PintuDuniaNyata")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 350, height: 350)
-                        .offset(y: 20)
-                    Image("PintuDuniaIsekai")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 500, height: 500)
+                    Button{
+                        chosenWorld = .Modern
+                    } label: {
+                        Image("PintuDuniaNyata")
+                            .resizable()
+                            .scaledToFit()
+                        
+                    }
+                    .frame(width: 350, height: 350)
+                    .offset(y: 20)
+                    Button{
+                        chosenWorld = .Astral
+                    } label: {
+                        Image("PintuDuniaIsekai")
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    .frame(width: 500, height: 500)
+                    
                 }
             }
         }
@@ -35,5 +46,5 @@ struct ChooseDoorView: View {
 }
 
 #Preview {
-    ChooseDoorView()
+    ChooseDoorView(chosenWorld: .constant(.Modern))
 }

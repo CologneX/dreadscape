@@ -7,16 +7,20 @@
 
 import SwiftUI
 import AVFoundation
+import AVKit
 
 class SoundManager {
     static let instance = SoundManager()
     
     private var audioPlayers: [AVAudioPlayer] = []
+    private var click1URL: URL?
+    private var click2URL: URL?
+    private var clickConfirmURL: URL?
     
     init() {
-        let click1URL = Bundle.main.url(forResource: "typewriterClick1", withExtension: "mp3")
-        let click2URL = Bundle.main.url(forResource: "typewriterClick2", withExtension: "mp3")
-        let clickConfirmURL = Bundle.main.url(forResource: "typewriterConfirm", withExtension: "mp3")
+        click1URL = Bundle.main.url(forResource: "typewriterClick1", withExtension: "mp3")
+        click2URL = Bundle.main.url(forResource: "typewriterClick2", withExtension: "mp3")
+        clickConfirmURL = Bundle.main.url(forResource: "typewriterConfirm", withExtension: "mp3")
         
         if let click1URL = click1URL, let click2URL = click2URL, let clickConfirmURL = clickConfirmURL {
             do {
@@ -42,16 +46,45 @@ class SoundManager {
     func playRandomClick() {
         let randomIndex = Int.random(in: 0...1)
         let sound = audioPlayers[randomIndex]
-        let newPlayer = try! AVAudioPlayer(contentsOf: sound.url!)
-        audioPlayers.append(newPlayer)
-        playSound(newPlayer)
+        playSound(sound)
     }
     
     func playConfirmClick() {
         let sound = audioPlayers[2]
-        let newPlayer = try! AVAudioPlayer(contentsOf: sound.url!)
-        audioPlayers.append(newPlayer)
-        playSound(newPlayer)
+        playSound(sound)
+    }
+}
+
+struct PlayerView: UIViewRepresentable {
+    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<PlayerView>) {
+    }
+    
+    func makeUIView(context: Context) -> UIView {
+        return PlayerUIView(frame: .zero)
+    }
+}
+
+class PlayerUIView: UIView {
+    private let playerLayer = AVPlayerLayer()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        let url = Bundle.main.url(forResource: "pairingTransition", withExtension: "mov")!
+        let player = AVPlayer(url: url)
+        player.play()
+        
+        playerLayer.player = player
+        layer.addSublayer(playerLayer)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        playerLayer.frame = bounds
+        playerLayer.videoGravity = .resizeAspectFill
     }
 }
 
@@ -60,17 +93,16 @@ struct PairingView: View {
     let buttonImages = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "keyBlank", "keyCancel", "keyConfirm"]
     @State private var buttonPressed = Array(repeating: false, count: 13)
     @State var pairingCode: String = ""
+    @State private var showTransitionVideo = false
     private func appendCode(_ code: String, at index: Int){
         if pairingCode.count < 6 {
             pairingCode.append(code)
         }
         withAnimation(.easeInOut(duration: 0.1)) {
-                   buttonPressed[index] = true
+            buttonPressed[index] = true
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            print("Belum \(buttonPressed)")
             withAnimation(.easeInOut(duration: 0.1)) {
-                print("Sudah \(buttonPressed)")
                 buttonPressed[index] = false
             }
         }
@@ -79,12 +111,13 @@ struct PairingView: View {
         self.multipeer.pairingCode = pairingCode
         self.multipeer.activate()
     }
-    
     var body: some View {
-        NavigationStack {
+        ZStack {
+            if showTransitionVideo {
+                PlayerView()
+            }
             GeometryReader { geometry in
                 let buttonSize = geometry.size.width / 10 // Adjust the divisor to change button size ratio
-                
                 VStack {
                     Spacer()
                     ZStack(alignment: .topLeading) {
@@ -222,16 +255,12 @@ struct PairingView: View {
                                     .frame(width: buttonSize, height: buttonSize)
                                 
                             }
-//                            .onTapGesture {
-//                                // Make the buttons down for a bit
-//                                self.offset(y: 10)
-//
-//                            }
                             .offset(y: -buttonSize * 1.25)
                         }
                     }
                     Button {
                         SoundManager.instance.playConfirmClick()
+                        showTransitionVideo = true
                         submitPasscodeMultipeer()
                     } label: {
                         Image("keyConfirm")
@@ -242,11 +271,11 @@ struct PairingView: View {
                     Spacer()
                 }
                 .padding(.horizontal, buttonSize)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.black)
-                .ignoresSafeArea(.all)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black)
+        .ignoresSafeArea(.all)
     }
 }
 
