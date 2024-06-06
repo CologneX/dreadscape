@@ -113,9 +113,6 @@ struct PairingView: View {
     }
     var body: some View {
         ZStack {
-            if showTransitionVideo {
-                PlayerView()
-            }
             GeometryReader { geometry in
                 let buttonSize = geometry.size.width / 10 // Adjust the divisor to change button size ratio
                 VStack {
@@ -271,6 +268,9 @@ struct PairingView: View {
                     Spacer()
                 }
                 .padding(.horizontal, buttonSize)
+            }
+            if showTransitionVideo {
+                PlayerView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
