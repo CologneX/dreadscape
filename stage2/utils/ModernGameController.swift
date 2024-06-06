@@ -2,6 +2,7 @@ import UIKit
 import QuartzCore
 import SceneKit
 import AVFoundation
+import SpriteKit
 class ModernGameController: UIViewController {
     
     var sceneView: SCNView!
@@ -17,6 +18,31 @@ class ModernGameController: UIViewController {
     var safeDoorNode: SCNNode!
     var shelfNode: SCNNode!
     var jumpscareNode: SCNNode!
+    var indicatorSafe: SCNNode!
+    
+    //Safe Puzzles Node
+    var symbol1Slot: SCNNode!
+    var symbol2Slot: SCNNode!
+    var symbol3Slot: SCNNode!
+    var symbol4Slot: SCNNode!
+    var symbol1: SCNNode!
+    
+    var symbol1Indicator: SCNNode!
+    var symbol2Indicator: SCNNode!
+    var symbol3Indicator: SCNNode!
+    var symbol4Indicator: SCNNode!
+    
+    var symbolSlots: [SCNNode]!
+    
+    var selectedSlot: SCNNode!
+    //Puzzles
+    var puzzleScreen = SCNScene()
+    var puzzleSequence: [Int] = [0,0,0,0]
+    var correctPuzzleSequence: [Int] = [1,2,3,4]
+    var puzzleCount = 0
+    var selectedSlotNumber = 0
+    
+    var material2 = SCNMaterial()
 
     // Position
     var isDone = false
@@ -30,7 +56,7 @@ class ModernGameController: UIViewController {
     //Limit
     var isLeft = 1
     var isRight = 1
-    
+
     //Camera Position
     var cameraPositionStart = SCNVector3(x: -3.801, y: 137.466, z: 103.739)
     
@@ -44,6 +70,17 @@ class ModernGameController: UIViewController {
     //Safe
     var isOpen = false
     
+    //Images Symbol
+    var image1: UIImage!
+    var image2: UIImage!
+    var image3: UIImage!
+    var image4: UIImage!
+    var image5: UIImage!
+    var image6: UIImage!
+    var image7: UIImage!
+    var image8: UIImage!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +88,8 @@ class ModernGameController: UIViewController {
         setupScene()
         setupNode()
         setupCamera()
+        setupPuzzle()
+        puzzleView()
         setupJumpscare()
         setupGestures()
         setUpAudioCapture()
@@ -64,6 +103,7 @@ class ModernGameController: UIViewController {
             if gameState == "moveObjectToPlayerPosition" {
                 moveObjectToPlayerPosition()
                 playerJumpscare()
+                isJumpscared = true
             }
         }
     }
@@ -77,7 +117,22 @@ class ModernGameController: UIViewController {
         lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         jumpscareNode = scene.rootNode.childNode(withName: "kepalaMonster", recursively: true)!
         safeNode = scene.rootNode.childNode(withName: "safe reference", recursively: true)!
+        safeDoorNode = scene.rootNode.childNode(withName: "Hinge", recursively: true)!
         shelfNode = scene.rootNode.childNode(withName: "shelf reference", recursively: true)!
+        indicatorSafe = scene.rootNode.childNode(withName: "indicatorSafe", recursively: true)
+        
+        //Puzzle Node
+        symbol1Slot = scene.rootNode.childNode(withName: "symbol1Slot", recursively: true)!
+        symbol2Slot = scene.rootNode.childNode(withName: "symbol2Slot", recursively: true)!
+        symbol3Slot = scene.rootNode.childNode(withName: "symbol3Slot", recursively: true)!
+        symbol4Slot = scene.rootNode.childNode(withName: "symbol4Slot", recursively: true)!
+        
+        symbol1Indicator = scene.rootNode.childNode(withName: "symbol1Indicator", recursively: true)!
+        symbol2Indicator = scene.rootNode.childNode(withName: "symbol2Indicator", recursively: true)!
+        symbol3Indicator = scene.rootNode.childNode(withName: "symbol3Indicator", recursively: true)!
+        symbol4Indicator = scene.rootNode.childNode(withName: "symbol4Indicator", recursively: true)!
+        
+        symbol1 = scene.rootNode.childNode(withName: "symbol1", recursively: true)
     }
     
     func setupScene() {
@@ -92,6 +147,7 @@ class ModernGameController: UIViewController {
         self.view.addSubview(sceneView)
         
         
+        
         let tapRecognizer = UITapGestureRecognizer()
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.numberOfTouchesRequired = 1
@@ -102,7 +158,7 @@ class ModernGameController: UIViewController {
     
     func setupCamera() {
         //Camera Position Start
-        let cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        _ = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
         
         //Set Camera Light
         cameraNode.light = SCNLight()
@@ -110,7 +166,6 @@ class ModernGameController: UIViewController {
         cameraNode.light?.intensity = 700
         cameraNode.light?.spotInnerAngle = 0
         cameraNode.light?.spotOuterAngle = 120.0
-        print(cameraNode.light?.spotOuterAngle.description)
         
         
     }
@@ -119,6 +174,17 @@ class ModernGameController: UIViewController {
         jumpscareNode.light = SCNLight()
         jumpscareNode.light?.type = .omni
         jumpscareNode.light?.intensity = 0
+    }
+    
+    func setupPuzzle(){
+        image1 = UIImage(named: "symbol1.png")
+        image2 = UIImage(named: "symbol2.png")
+        image3 = UIImage(named: "symbol3.png")
+        image4 = UIImage(named: "symbol4.png")
+        image5 = UIImage(named: "symbol5.png")
+        image6 = UIImage(named: "symbol6.png")
+        image7 = UIImage(named: "symbol7.png")
+        image8 = UIImage(named: "symbol8.png")
     }
     
     func playAmbience() {
@@ -173,7 +239,7 @@ class ModernGameController: UIViewController {
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
                 print(self.db)
-                if self.db > -13 {
+                if self.db > -5 {
                     
                     self.audioTriggered()
                     print("Triggered")
@@ -195,19 +261,21 @@ class ModernGameController: UIViewController {
     
     func playerJumpscare(){
         isJumpscared = true
-        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 1)
+        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
         
         
-        fallAndFade2("test")
+        
         
         SCNAction.wait(duration: 3)
         let moveJumpscare = SCNAction.move(to: jumpscarePosition, duration: 0.09)
-        playScream()
         moveJumpscare.timingMode = .easeInEaseOut
-        jumpscareNode.runAction(moveJumpscare)
         
-        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 4)), z: 0, duration: 0.001)
-        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 4)), z: 0, duration: 0.001)
+        fallAndFade2("test")
+        jumpscareNode.runAction(moveJumpscare)
+        playScream()
+        
+        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
+        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 4)), z: 0, duration: 0.1)
 
         
         jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
@@ -279,8 +347,8 @@ class ModernGameController: UIViewController {
         }
     }
     
+    //Tap Screen Mechanism
     @objc func sceneViewTapped(recognizer: UITapGestureRecognizer) {
-        
         
         
         let p = recognizer.location(in: sceneView)
@@ -290,7 +358,7 @@ class ModernGameController: UIViewController {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
             
-            
+           
             //Check What Tapped
             if(tappedNode.name == "bass1" || tappedNode.name == "bass2"){
                 let bassPositionX = bassNode.position.x
@@ -317,23 +385,150 @@ class ModernGameController: UIViewController {
                 let positionTo = SCNVector3(x: shelfPositionX, y: shelfPositionY, z: shelfPositionZ)
                 let moveAction = SCNAction.move(to: positionTo, duration: 1)
                 cameraNode.runAction(moveAction)
-            }else if(tappedNode.name == "Hinge" || tappedNode.name == "Safe"){
-                if (isOpen == true){
-                    closeSafeDoor()
-                } else {
-                    openSafeDoor()
-                }
             }
             else if (tappedNode.name == "wall"){
                 let moveAction = SCNAction.move(to: cameraPositionStart, duration: 1)
                 cameraNode.runAction(moveAction)
             }
             
+                    
+            let material = SCNMaterial()
+            let material3 = SCNMaterial()
+            let material4 = SCNMaterial()
+            let material5 = SCNMaterial()
+            let material6 = SCNMaterial()
+            let material7 = SCNMaterial()
+            let material8 = SCNMaterial()
+            let material9 = SCNMaterial()
+            
+            let material1Indicator = SCNMaterial()
+            let material2Indicator = SCNMaterial()
+            let material3Indicator = SCNMaterial()
+            let material4Indicator = SCNMaterial()
+            
+            if(tappedNode.name == "symbol1Slot"){
+                selectedSlot = symbol1Slot
+                selectedSlotNumber = 0
+                
+                
+                material2Indicator.reflective.contents = UIColor.white
+                symbol2Indicator.geometry?.materials = [material2Indicator]
+                
+                
+                material3Indicator.reflective.contents = UIColor.white
+                symbol3Indicator.geometry?.materials = [material3Indicator]
+                
+                
+                material4Indicator.reflective.contents = UIColor.white
+                symbol4Indicator.geometry?.materials = [material4Indicator]
+            } else if (tappedNode.name == "symbol2Slot"){
+                selectedSlot = symbol2Slot
+                selectedSlotNumber = 1
+                
+                material1Indicator.reflective.contents = UIColor.white
+                symbol1Indicator.geometry?.materials = [material1Indicator]
+                
+                material3Indicator.reflective.contents = UIColor.white
+                symbol3Indicator.geometry?.materials = [material3Indicator]
+                
+                material4Indicator.reflective.contents = UIColor.white
+                symbol4Indicator.geometry?.materials = [material4Indicator]
+            } else if (tappedNode.name == "symbol3Slot"){
+                selectedSlot = symbol3Slot
+                selectedSlotNumber = 2
+                
+                material1Indicator.reflective.contents = UIColor.white
+                symbol1Indicator.geometry?.materials = [material1Indicator]
+                
+                material2Indicator.reflective.contents = UIColor.white
+                symbol2Indicator.geometry?.materials = [material2Indicator]
+                
+                
+                material4Indicator.reflective.contents = UIColor.white
+                symbol4Indicator.geometry?.materials = [material4Indicator]
+            } else if (tappedNode.name == "symbol4Slot"){
+                selectedSlot = symbol4Slot
+                selectedSlotNumber = 3
+                
+                material1Indicator.reflective.contents = UIColor.white
+                symbol1Indicator.geometry?.materials = [material1Indicator]
+                
+                material2Indicator.reflective.contents = UIColor.white
+                symbol2Indicator.geometry?.materials = [material2Indicator]
+                
+                material3Indicator.reflective.contents = UIColor.white
+                symbol3Indicator.geometry?.materials = [material3Indicator]
+                
+            }
+            
+            
+            if(selectedSlot != nil){
+                
+                if(tappedNode.name == "symbol1"){
+                    appendSymbol(number:selectedSlotNumber, code: 1)
+                    
+                    material.diffuse.contents = image1
+                    selectedSlot.geometry?.materials = [material]
+                } else if(tappedNode.name == "symbol2"){
+                    appendSymbol(number:selectedSlotNumber, code: 2)
+                    
+                    material3.diffuse.contents = image2
+                    selectedSlot.geometry?.materials = [material3]
+                }else if(tappedNode.name == "symbol3"){
+                    appendSymbol(number:selectedSlotNumber, code: 3)
+                    
+                    material4.diffuse.contents = image3
+                    selectedSlot.geometry?.materials = [material4]
+                }else if(tappedNode.name == "symbol4"){
+                    appendSymbol(number:selectedSlotNumber, code: 4)
+                    
+                    material5.diffuse.contents = image4
+                    selectedSlot.geometry?.materials = [material5]
+                }else if(tappedNode.name == "symbol5"){
+                    appendSymbol(number:selectedSlotNumber, code: 5)
+                    
+                    material6.diffuse.contents = image5
+                    selectedSlot.geometry?.materials = [material6]
+                }else if(tappedNode.name == "symbol6"){
+                    appendSymbol(number:selectedSlotNumber, code: 6)
+                    
+                    material7.diffuse.contents = image6
+                    selectedSlot.geometry?.materials = [material7]
+                }else if(tappedNode.name == "symbol7"){
+                    appendSymbol(number:selectedSlotNumber, code: 7)
+                    
+                    material8.diffuse.contents = image7
+                    selectedSlot.geometry?.materials = [material8]
+                }else if(tappedNode.name == "symbol8"){
+                    appendSymbol(number:selectedSlotNumber, code: 8)
+                   
+                    material9.diffuse.contents = image8
+                    selectedSlot.geometry?.materials = [material9]
+                }
+            } else {
+                print("No Selected Slot")
+            }
+            
+            
         }
     }
     
+    func appendSymbol(number: Int, code: Int){
+            puzzleSequence[number] = code
+            if(puzzleSequence == correctPuzzleSequence) {
+                print("CORRECT")
+                material2.diffuse.contents = UIColor.green
+                indicatorSafe.geometry?.materials = [material2]
+                openSafeDoor()
+            }
+        
+        print(puzzleSequence)
+            
+    }
+    
+    
     func moveObjectToPlayerPosition() {
-        let position = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
+        _ = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
         
         let positionx = cameraNode.position.x
         let positiony = cameraNode.position.y - 16
@@ -348,8 +543,7 @@ class ModernGameController: UIViewController {
     func audioTriggered() {
         multipeerManager.changeGameState("moveObjectToPlayerPosition")
         if(playerLives > 0){
-            fallAndFade(cameraNode)
-            print(cameraNode.light?.spotOuterAngle)
+            fallAndFade(cameraNode ?? cameraNode)
             playerLives -= 1
         } else {
             if(isJumpscared == false){
@@ -358,7 +552,7 @@ class ModernGameController: UIViewController {
             
         }
         
-        let playerPosition = cameraNode.position
+        _ = cameraNode.position
         print("ghost: \(ghostNode.position)")
         print("player: \(cameraNode.position)")
         
@@ -373,21 +567,36 @@ class ModernGameController: UIViewController {
     }
     
     func closeSafeDoor() {
-        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
         let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
         
         rotateAction.timingMode = .easeInEaseOut
-        gearRotationAction.timingMode = .easeInEaseOut
         
         self.safeDoorNode.runAction(rotateAction)
     }
+    
+    //Puzzle Mechanism
+    func puzzleView(){
+   
+        
+    }
+    
     
     @IBAction func fallAndFade(_ sender: Any) {
         SCNTransaction.animationDuration = 1.0
         cameraNode.light?.spotOuterAngle -= 30
     }
     @IBAction func fallAndFade2(_ sender: Any) {
-        SCNTransaction.animationDuration = 0.0001
+        SCNTransaction.animationDuration = 0.001
+        cameraNode.light?.spotOuterAngle = 60
+    }
+    
+    @IBAction func fallAndFade3(_ sender: Any) {
+        
         cameraNode.light?.spotOuterAngle = 90
     }
+    
+}
+
+#Preview(){
+    ModernGameController()
 }
