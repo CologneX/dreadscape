@@ -18,8 +18,12 @@ class AstralGameController: UIViewController {
     // Nodes
     var cameraNode: SCNNode!
     var ghostNode: SCNNode!
-    var roomNode: SCNNode!
+    var isekaiRoomNode: SCNNode!
     var lightNode: SCNNode!
+    var pillarPertamaNode: SCNNode!
+    var pillarKeduaNode: SCNNode!
+    var pillarKetigaNode: SCNNode!
+    var pillarKeempatNode: SCNNode!
     
     // Safe Nodes
     var safeNode: SCNNode!
@@ -46,6 +50,7 @@ class AstralGameController: UIViewController {
         
         setupScene()
         setupNode()
+        setupCamera()
         setupGestures()
         setUpAudioCapture()
         playAmbience()
@@ -68,15 +73,16 @@ class AstralGameController: UIViewController {
     //SETUP SCENE
     func setupNode() {
         cameraNode = scene.rootNode.childNode(withName: "Camera", recursively: true)!
-//        ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
-//        roomNode = scene.rootNode.childNode(withName: "Room reference", recursively: true)!
-//        lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
-        //        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
-        //        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
+        ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
+        lightNode = scene.rootNode.childNode(withName: "Light", recursively: true)!
+        pillarPertamaNode = scene.rootNode.childNode(withName: "pillarPertama", recursively: true)!
+        pillarKeduaNode = scene.rootNode.childNode(withName: "pillarKedua", recursively: true)!
+        pillarKetigaNode = scene.rootNode.childNode(withName: "pillarKetiga", recursively: true)!
+        pillarKeempatNode = scene.rootNode.childNode(withName: "pillarKeempat", recursively: true)!
     }
     
     func setupScene() {
-        scene = SCNScene(named: "art.scnassets/mainScene.scn")
+        scene = SCNScene(named: "art.scnassets/isekaiScene.scn")
         sceneView = SCNView(frame: self.view.bounds)
         sceneView.allowsCameraControl = false
         
@@ -89,10 +95,15 @@ class AstralGameController: UIViewController {
         tapRecognizer.numberOfTapsRequired = 1
         tapRecognizer.numberOfTouchesRequired = 1
         
-        tapRecognizer.addTarget(self, action: #selector(ModernGameController.sceneViewTapped(recognizer:)))
+        tapRecognizer.addTarget(self, action: #selector(AstralGameController.sceneViewTapped(recognizer:)))
         sceneView.addGestureRecognizer(tapRecognizer)
     }
     
+    func setupCamera() {
+        //Camera Position Start
+        let cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        
+    }
     
     func playAmbience() {
         let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
@@ -110,7 +121,6 @@ class AstralGameController: UIViewController {
             AVAudioApplication.requestRecordPermission(completionHandler: {
                 response in print(response)
             })
-            
             captureAudio()
         } catch {
             print("Error: Failed to set up recording session.")
@@ -219,46 +229,28 @@ class AstralGameController: UIViewController {
         if let hitResult = hitResults.first {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
+//            if (tappedNode.name == "pillarPertama"){
+//                let material = SCNMaterial()
+//                material.diffuse.contents = UIColor.red
+//                pillarPertamaNode.geometry?.materials = [material]
+//            }
         }
     }
     
+    func audioTriggered() {
+        moveObjectToPlayerPosition()
+        multipeerManager.changeGameState("moveObjectToPlayerPosition")
+    }
     func moveObjectToPlayerPosition() {
-        print("\(cameraNode.convertPosition(cameraNode.position, to: scene.rootNode))")
         let position = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
         
-        let positionx = cameraNode.position.x - 5
-        let positiony = cameraNode.position.y
-        let positionz = cameraNode.position.z - 90
+        let positionx = cameraNode.position.x
+        let positiony = cameraNode.position.y - 16
+        let positionz = cameraNode.position.z + 25
         
         let position2 = SCNVector3(x: positionx, y: positiony, z: positionz)
         
         let moveAction = SCNAction.move(to: position2, duration: 0.05)
         ghostNode.runAction(moveAction)
     }
-    
-    func audioTriggered() {
-        print("Triggered: \(String(describing: db))")
-        let playerPosition = cameraNode.position
-        print("ghost: \(ghostNode.position)")
-        print("player: \(cameraNode.position)")
-        
-        moveObjectToPlayerPosition()
-        
-        multipeerManager.changeGameState("moveObjectToPlayerPosition")
-    }
-    
-    func openSafeDoor() {
-        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: (0 * .pi / 180), z: 0, duration: 1.5)
-        rotateAction.timingMode = .easeInEaseOut
-        self.safeDoorNode.runAction(rotateAction)
-    }
-    
-    func closeSafeDoor() {
-        let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
-        
-        rotateAction.timingMode = .easeInEaseOut
-        
-        self.safeDoorNode.runAction(rotateAction)
-    }
 }
-

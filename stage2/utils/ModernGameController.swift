@@ -216,10 +216,6 @@ class ModernGameController: UIViewController {
             AVAudioApplication.requestRecordPermission(completionHandler: {
                 response in print(response)
             })
-            //            recordingSession.requestRecordPermission({ result in
-            //
-            //                guard result else { return }
-            //            })
             captureAudio()
         } catch {
             print("Error: Failed to set up recording session.")
