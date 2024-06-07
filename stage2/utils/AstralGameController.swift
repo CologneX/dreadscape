@@ -253,4 +253,10 @@ class AstralGameController: UIViewController {
         let moveAction = SCNAction.move(to: position2, duration: 0.05)
         ghostNode.runAction(moveAction)
     }
+    
+    func openDoor() {
+        let doorNode = scene.rootNode.childNode(withName: "door", recursively: true)!
+        let moveAction = SCNAction.move(by: SCNVector3(0, 0, -5), duration: 1.0)
+        doorNode.runAction(moveAction)
+    }
 }
