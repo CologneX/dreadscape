@@ -127,10 +127,10 @@ class ModernGameController: UIViewController {
         symbol3Slot = scene.rootNode.childNode(withName: "symbol3Slot", recursively: true)!
         symbol4Slot = scene.rootNode.childNode(withName: "symbol4Slot", recursively: true)!
         
-        symbol1Indicator = scene.rootNode.childNode(withName: "symbol1Indicator", recursively: true)!
-        symbol2Indicator = scene.rootNode.childNode(withName: "symbol2Indicator", recursively: true)!
-        symbol3Indicator = scene.rootNode.childNode(withName: "symbol3Indicator", recursively: true)!
-        symbol4Indicator = scene.rootNode.childNode(withName: "symbol4Indicator", recursively: true)!
+        symbol1Indicator = scene.rootNode.childNode(withName: "slotSelected1", recursively: true)!
+        symbol2Indicator = scene.rootNode.childNode(withName: "slotSelected2", recursively: true)!
+        symbol3Indicator = scene.rootNode.childNode(withName: "slotSelected3", recursively: true)!
+        symbol4Indicator = scene.rootNode.childNode(withName: "slotSelected4", recursively: true)!
         
         symbol1 = scene.rootNode.childNode(withName: "symbol1", recursively: true)
     }
@@ -185,6 +185,12 @@ class ModernGameController: UIViewController {
         image6 = UIImage(named: "symbol6.png")
         image7 = UIImage(named: "symbol7.png")
         image8 = UIImage(named: "symbol8.png")
+        
+        symbol1Indicator.opacity = 0
+        symbol1Indicator.isHidden = true
+        symbol2Indicator.isHidden = true
+        symbol3Indicator.isHidden = true
+        symbol4Indicator.isHidden = true
     }
     
     func playAmbience() {
@@ -401,66 +407,40 @@ class ModernGameController: UIViewController {
             var material8 = SCNMaterial()
             var material9 = SCNMaterial()
             
-            var material1Indicator = SCNMaterial()
-            var material2Indicator = SCNMaterial()
-            var material3Indicator = SCNMaterial()
-            var material4Indicator = SCNMaterial()
             
             if(tappedNode.name == "symbol1Slot"){
                 selectedSlot = symbol1Slot
                 selectedSlotNumber = 0
                 
-                material1Indicator.diffuse.contents = UIColor(named: "#0057e7")
-                symbol1Indicator.geometry?.materials = [material1Indicator]
+                symbol1Indicator.isHidden = false
+                symbol2Indicator.isHidden = true
+                symbol3Indicator.isHidden = true
+                symbol4Indicator.isHidden = true
                 
-                material2Indicator.diffuse.contents = UIColor(named: "#0057e7")
-                symbol2Indicator.geometry?.materials = [material2Indicator]
-                
-                
-                material3Indicator.diffuse.contents = UIColor(named: "#008744")
-                symbol3Indicator.geometry?.materials = [material3Indicator]
-                
-                
-                material4Indicator.diffuse.contents = UIColor(named:"#f9d62e")
-                symbol4Indicator.geometry?.materials = [material4Indicator]
             } else if (tappedNode.name == "symbol2Slot"){
                 selectedSlot = symbol2Slot
                 selectedSlotNumber = 1
                 
-                material1Indicator.diffuse.contents = UIColor(named: "#d62d20")
-                symbol1Indicator.geometry?.materials = [material1Indicator]
-                
-                material3Indicator.diffuse.contents = UIColor(named: "#008744")
-                symbol3Indicator.geometry?.materials = [material3Indicator]
-                
-                material4Indicator.diffuse.contents = UIColor(named:"#f9d62e")
-                symbol4Indicator.geometry?.materials = [material4Indicator]
+                symbol1Indicator.isHidden = true
+                symbol2Indicator.isHidden = false
+                symbol3Indicator.isHidden = true
+                symbol4Indicator.isHidden = true
             } else if (tappedNode.name == "symbol3Slot"){
                 selectedSlot = symbol3Slot
                 selectedSlotNumber = 2
                 
-                material1Indicator.diffuse.contents = UIColor(named: "#d62d20")
-                symbol1Indicator.geometry?.materials = [material1Indicator]
-                
-                material2Indicator.diffuse.contents = UIColor(named: "#0057e7")
-                symbol2Indicator.geometry?.materials = [material2Indicator]
-                
-                
-                material4Indicator.diffuse.contents = UIColor(named:"#f9d62e")
-                symbol4Indicator.geometry?.materials = [material4Indicator]
+                symbol1Indicator.isHidden = true
+                symbol2Indicator.isHidden = true
+                symbol3Indicator.isHidden = false
+                symbol4Indicator.isHidden = true
             } else if (tappedNode.name == "symbol4Slot"){
                 selectedSlot = symbol4Slot
                 selectedSlotNumber = 3
                 
-                material1Indicator.diffuse.contents = UIColor(named: "#d62d20")
-                symbol1Indicator.geometry?.materials = [material1Indicator]
-                
-                material2Indicator.diffuse.contents = UIColor(named: "#0057e7")
-                symbol2Indicator.geometry?.materials = [material2Indicator]
-                
-                material3Indicator.diffuse.contents = UIColor(named: "#008744")
-                symbol3Indicator.geometry?.materials = [material3Indicator]
-                
+                symbol1Indicator.isHidden = true
+                symbol2Indicator.isHidden = true
+                symbol3Indicator.isHidden = true
+                symbol4Indicator.isHidden = false
             }
             
             
@@ -594,10 +574,7 @@ class ModernGameController: UIViewController {
         cameraNode.light?.spotOuterAngle = 90
     }
     
-    @IBAction func fallAndFade3(_ sender: Any) {
-        
-        cameraNode.light?.spotOuterAngle = 90
-    }
+    
     
 }
 

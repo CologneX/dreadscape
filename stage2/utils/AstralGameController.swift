@@ -67,10 +67,10 @@ class AstralGameController: UIViewController {
     
     //SETUP SCENE
     func setupNode() {
-        cameraNode = scene.rootNode.childNode(withName: "camera", recursively: true)!
-        ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
-        roomNode = scene.rootNode.childNode(withName: "Room reference", recursively: true)!
-        lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
+        cameraNode = scene.rootNode.childNode(withName: "Camera", recursively: true)!
+//        ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
+//        roomNode = scene.rootNode.childNode(withName: "Room reference", recursively: true)!
+//        lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         //        safeNode = scene.rootNode.childNode(withName: "Safe", recursively: false)!
         //        safeDoorNode = safeNode.childNode(withName: "Hinge", recursively: false)!
     }
@@ -136,7 +136,7 @@ class AstralGameController: UIViewController {
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
                 
-                if self.db > -13 {
+                if self.db > -5 {
                     self.audioTriggered()
                     print("Triggered")
                 }
