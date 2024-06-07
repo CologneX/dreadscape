@@ -2,6 +2,7 @@ import UIKit
 import QuartzCore
 import SceneKit
 import AVFoundation
+import SpriteKit
 class ModernGameController: UIViewController {
     
     var sceneView: SCNView!
@@ -16,6 +17,32 @@ class ModernGameController: UIViewController {
     var safeNode: SCNNode!
     var safeDoorNode: SCNNode!
     var shelfNode: SCNNode!
+    var jumpscareNode: SCNNode!
+    var indicatorSafe: SCNNode!
+    
+    //Safe Puzzles Node
+    var symbol1Slot: SCNNode!
+    var symbol2Slot: SCNNode!
+    var symbol3Slot: SCNNode!
+    var symbol4Slot: SCNNode!
+    var symbol1: SCNNode!
+    
+    var symbol1Indicator: SCNNode!
+    var symbol2Indicator: SCNNode!
+    var symbol3Indicator: SCNNode!
+    var symbol4Indicator: SCNNode!
+    
+    var symbolSlots: [SCNNode]!
+    
+    var selectedSlot: SCNNode!
+    //Puzzles
+    var puzzleScreen = SCNScene()
+    var puzzleSequence: [Int] = [0,0,0,0]
+    var correctPuzzleSequence: [Int] = [1,2,3,4]
+    var puzzleCount = 0
+    var selectedSlotNumber = 0
+    
+    var material2 = SCNMaterial()
 
     // Position
     var isDone = false
@@ -29,13 +56,31 @@ class ModernGameController: UIViewController {
     //Limit
     var isLeft = 1
     var isRight = 1
-    
+
     //Camera Position
     var cameraPositionStart = SCNVector3(x: -3.801, y: 137.466, z: 103.739)
     
-    
     // Multipeer Connectivity Manager
     var multipeerManager: MultipeerManager!
+    
+    //Player Lives and State
+    var playerLives = 3
+    var isJumpscared = false
+    
+    //Safe
+    var isOpen = false
+    
+    //Images Symbol
+    var image1: UIImage!
+    var image2: UIImage!
+    var image3: UIImage!
+    var image4: UIImage!
+    var image5: UIImage!
+    var image6: UIImage!
+    var image7: UIImage!
+    var image8: UIImage!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +88,12 @@ class ModernGameController: UIViewController {
         setupScene()
         setupNode()
         setupCamera()
+        setupPuzzle()
+        puzzleView()
+        setupJumpscare()
         setupGestures()
-//        setUpAudioCapture()
-        playAmbience()
+        setUpAudioCapture()
+//        playAmbience()
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleGameStateChange(_:)), name: .gameStateDidChange, object: nil)
     }
@@ -54,6 +102,8 @@ class ModernGameController: UIViewController {
         if let gameState = notification.object as? String {
             if gameState == "moveObjectToPlayerPosition" {
                 moveObjectToPlayerPosition()
+                playerJumpscare()
+                isJumpscared = true
             }
         }
     }
@@ -63,10 +113,26 @@ class ModernGameController: UIViewController {
         cameraNode = scene.rootNode.childNode(withName: "camera", recursively: true)!
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
         roomNode = scene.rootNode.childNode(withName: "Room2 reference", recursively: true)!
-        lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
         bassNode = scene.rootNode.childNode(withName: "bass reference", recursively: false)
-        safeNode = scene.rootNode.childNode(withName: "Safe reference", recursively: true)!
+        lightNode = scene.rootNode.childNode(withName: "omni", recursively: true)!
+        jumpscareNode = scene.rootNode.childNode(withName: "kepalaMonster", recursively: true)!
+        safeNode = scene.rootNode.childNode(withName: "safe reference", recursively: true)!
+        safeDoorNode = scene.rootNode.childNode(withName: "Hinge", recursively: true)!
         shelfNode = scene.rootNode.childNode(withName: "shelf reference", recursively: true)!
+        indicatorSafe = scene.rootNode.childNode(withName: "indicatorSafe", recursively: true)
+        
+        //Puzzle Node
+        symbol1Slot = scene.rootNode.childNode(withName: "symbol1Slot", recursively: true)!
+        symbol2Slot = scene.rootNode.childNode(withName: "symbol2Slot", recursively: true)!
+        symbol3Slot = scene.rootNode.childNode(withName: "symbol3Slot", recursively: true)!
+        symbol4Slot = scene.rootNode.childNode(withName: "symbol4Slot", recursively: true)!
+        
+        symbol1Indicator = scene.rootNode.childNode(withName: "slotSelected1", recursively: true)!
+        symbol2Indicator = scene.rootNode.childNode(withName: "slotSelected2", recursively: true)!
+        symbol3Indicator = scene.rootNode.childNode(withName: "slotSelected3", recursively: true)!
+        symbol4Indicator = scene.rootNode.childNode(withName: "slotSelected4", recursively: true)!
+        
+        symbol1 = scene.rootNode.childNode(withName: "symbol1", recursively: true)
     }
     
     func setupScene() {
@@ -76,10 +142,10 @@ class ModernGameController: UIViewController {
         
         sceneView.scene = scene
         
+        
         // Add the SCNView to the view controller's view
         self.view.addSubview(sceneView)
         
-       
         
         
         let tapRecognizer = UITapGestureRecognizer()
@@ -92,11 +158,49 @@ class ModernGameController: UIViewController {
     
     func setupCamera() {
         //Camera Position Start
-        cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        _ = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        
+        //Set Camera Light
+        cameraNode.light = SCNLight()
+        cameraNode.light!.type = .spot
+        cameraNode.light?.intensity = 700
+        cameraNode.light?.spotInnerAngle = 0
+        cameraNode.light?.spotOuterAngle = 120.0
+        
         
     }
     
+    func setupJumpscare(){
+        jumpscareNode.light = SCNLight()
+        jumpscareNode.light?.type = .omni
+        jumpscareNode.light?.intensity = 0
+    }
+    
+    func setupPuzzle(){
+        image1 = UIImage(named: "symbol1.png")
+        image2 = UIImage(named: "symbol2.png")
+        image3 = UIImage(named: "symbol3.png")
+        image4 = UIImage(named: "symbol4.png")
+        image5 = UIImage(named: "symbol5.png")
+        image6 = UIImage(named: "symbol6.png")
+        image7 = UIImage(named: "symbol7.png")
+        image8 = UIImage(named: "symbol8.png")
+        
+        symbol1Indicator.opacity = 0
+        symbol1Indicator.isHidden = true
+        symbol2Indicator.isHidden = true
+        symbol3Indicator.isHidden = true
+        symbol4Indicator.isHidden = true
+    }
+    
     func playAmbience() {
+        let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
+        player = try! AVAudioPlayer(contentsOf: url!)
+        player.volume = 1.0
+        player.play()
+    }
+    
+    func playStep() {
         let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
         player = try! AVAudioPlayer(contentsOf: url!)
         player.volume = 1.0
@@ -133,11 +237,12 @@ class ModernGameController: UIViewController {
             audioRecorder.record()
             audioRecorder.isMeteringEnabled = true
             
-            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
+            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
-                
-                if self.db > -13 {
+                print(self.db)
+                if self.db > -14 {
+                    
                     self.audioTriggered()
                     print("Triggered")
                 }
@@ -145,6 +250,38 @@ class ModernGameController: UIViewController {
         } catch {
             print("ERROR: Failed to start recording process.")
         }
+    }
+    
+    func playScream(){
+        if let source = SCNAudioSource(fileNamed: "art.scnassets/Audio/scream.mp3") {
+            let action = SCNAction.playAudio(source, waitForCompletion: false)
+            jumpscareNode.runAction(action)
+        } else {
+            print("Cannot find the audio file.")
+        }
+    }
+    
+    func playerJumpscare(){
+        isJumpscared = true
+        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
+        
+        
+        
+        
+        SCNAction.wait(duration: 3)
+        let moveJumpscare = SCNAction.move(to: jumpscarePosition, duration: 0.09)
+        moveJumpscare.timingMode = .easeInEaseOut
+        
+        fallAndFade2("test")
+        jumpscareNode.runAction(moveJumpscare)
+        playScream()
+        
+        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
+        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
+
+        
+        jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
+        
     }
     
     @objc func rotateCameraLeft() {
@@ -212,8 +349,8 @@ class ModernGameController: UIViewController {
         }
     }
     
+    //Tap Screen Mechanism
     @objc func sceneViewTapped(recognizer: UITapGestureRecognizer) {
-        
         
         
         let p = recognizer.location(in: sceneView)
@@ -223,7 +360,7 @@ class ModernGameController: UIViewController {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
             
-            
+           
             //Check What Tapped
             if(tappedNode.name == "bass1" || tappedNode.name == "bass2"){
                 let bassPositionX = bassNode.position.x
@@ -250,16 +387,126 @@ class ModernGameController: UIViewController {
                 let positionTo = SCNVector3(x: shelfPositionX, y: shelfPositionY, z: shelfPositionZ)
                 let moveAction = SCNAction.move(to: positionTo, duration: 1)
                 cameraNode.runAction(moveAction)
-            }else if (tappedNode.name == "wall"){
+            }
+            else if (tappedNode.name == "wall"){
                 let moveAction = SCNAction.move(to: cameraPositionStart, duration: 1)
                 cameraNode.runAction(moveAction)
             }
             
+                    
+            var material = SCNMaterial()
+            var material3 = SCNMaterial()
+            var material4 = SCNMaterial()
+            var material5 = SCNMaterial()
+            var material6 = SCNMaterial()
+            var material7 = SCNMaterial()
+            var material8 = SCNMaterial()
+            var material9 = SCNMaterial()
+            
+            
+            if(tappedNode.name == "symbol1Slot"){
+                selectedSlot = symbol1Slot
+                selectedSlotNumber = 0
+                
+                symbol1Indicator.isHidden = false
+                symbol2Indicator.isHidden = true
+                symbol3Indicator.isHidden = true
+                symbol4Indicator.isHidden = true
+                
+            } else if (tappedNode.name == "symbol2Slot"){
+                selectedSlot = symbol2Slot
+                selectedSlotNumber = 1
+                
+                symbol1Indicator.isHidden = true
+                symbol2Indicator.isHidden = false
+                symbol3Indicator.isHidden = true
+                symbol4Indicator.isHidden = true
+            } else if (tappedNode.name == "symbol3Slot"){
+                selectedSlot = symbol3Slot
+                selectedSlotNumber = 2
+                
+                symbol1Indicator.isHidden = true
+                symbol2Indicator.isHidden = true
+                symbol3Indicator.isHidden = false
+                symbol4Indicator.isHidden = true
+            } else if (tappedNode.name == "symbol4Slot"){
+                selectedSlot = symbol4Slot
+                selectedSlotNumber = 3
+                
+                symbol1Indicator.isHidden = true
+                symbol2Indicator.isHidden = true
+                symbol3Indicator.isHidden = true
+                symbol4Indicator.isHidden = false
+            }
+            
+            
+            if(selectedSlot != nil){
+                
+                if(tappedNode.name == "symbol1"){
+                    appendSymbol(number:selectedSlotNumber, code: 1)
+                    
+                    material.diffuse.contents = image1
+                    selectedSlot.geometry?.materials = [material]
+                } else if(tappedNode.name == "symbol2"){
+                    appendSymbol(number:selectedSlotNumber, code: 2)
+                    
+                    material3.diffuse.contents = image2
+                    selectedSlot.geometry?.materials = [material3]
+                }else if(tappedNode.name == "symbol3"){
+                    appendSymbol(number:selectedSlotNumber, code: 3)
+                    
+                    material4.diffuse.contents = image3
+                    selectedSlot.geometry?.materials = [material4]
+                }else if(tappedNode.name == "symbol4"){
+                    appendSymbol(number:selectedSlotNumber, code: 4)
+                    
+                    material5.diffuse.contents = image4
+                    selectedSlot.geometry?.materials = [material5]
+                }else if(tappedNode.name == "symbol5"){
+                    appendSymbol(number:selectedSlotNumber, code: 5)
+                    
+                    material6.diffuse.contents = image5
+                    selectedSlot.geometry?.materials = [material6]
+                }else if(tappedNode.name == "symbol6"){
+                    appendSymbol(number:selectedSlotNumber, code: 6)
+                    
+                    material7.diffuse.contents = image6
+                    selectedSlot.geometry?.materials = [material7]
+                }else if(tappedNode.name == "symbol7"){
+                    appendSymbol(number:selectedSlotNumber, code: 7)
+                    
+                    material8.diffuse.contents = image7
+                    selectedSlot.geometry?.materials = [material8]
+                }else if(tappedNode.name == "symbol8"){
+                    appendSymbol(number:selectedSlotNumber, code: 8)
+                   
+                    material9.diffuse.contents = image8
+                    selectedSlot.geometry?.materials = [material9]
+                }
+            } else {
+                print("No Selected Slot")
+            }
+            
+            
         }
     }
     
+    func appendSymbol(number: Int, code: Int){
+            puzzleSequence[number] = code
+            if(puzzleSequence == correctPuzzleSequence) {
+                print("CORRECT")
+                material2.diffuse.contents = UIColor.green
+                indicatorSafe.geometry?.materials = [material2]
+                openSafeDoor()
+            }
+        
+        print(puzzleSequence)
+            
+    }
+    
+    
     func moveObjectToPlayerPosition() {
-        let position = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
+        _ = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
         
         let positionx = cameraNode.position.x
         let positiony = cameraNode.position.y - 16
@@ -272,14 +519,25 @@ class ModernGameController: UIViewController {
     }
     
     func audioTriggered() {
-
-        let playerPosition = cameraNode.position
+        
+        if(playerLives > 0){
+            fallAndFade(cameraNode)
+            playerLives -= 1
+        } else {
+            if(isJumpscared == false){
+                playerJumpscare()
+                isJumpscared = true
+                multipeerManager.changeGameState("moveObjectToPlayerPosition")
+            }
+            
+        }
+        
+        _ = cameraNode.position
         print("ghost: \(ghostNode.position)")
         print("player: \(cameraNode.position)")
         
         moveObjectToPlayerPosition()
         
-        multipeerManager.changeGameState("moveObjectToPlayerPosition")
     }
     
     func openSafeDoor() {
@@ -289,13 +547,30 @@ class ModernGameController: UIViewController {
     }
     
     func closeSafeDoor() {
-        let gearRotationAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1)
         let rotateAction = SCNAction.rotateTo(x: (90 * .pi / 180), y: -(90 * .pi / 180), z: 0, duration: 1.5)
         
         rotateAction.timingMode = .easeInEaseOut
-        gearRotationAction.timingMode = .easeInEaseOut
         
         self.safeDoorNode.runAction(rotateAction)
     }
+    
+    //Puzzle Mechanism
+    func puzzleView(){
+   
+        
+    }
+    
+    
+    @IBAction func fallAndFade(_ sender: Any) {
+        SCNTransaction.animationDuration = 1.0
+        cameraNode.light?.spotOuterAngle -= 30
+    }
+    @IBAction func fallAndFade2(_ sender: Any) {
+        SCNTransaction.animationDuration = 0.001
+        cameraNode.light?.spotOuterAngle = 90
+    }
+    
+    
+    
 }
 
