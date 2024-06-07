@@ -39,7 +39,7 @@ class ModernGameController: UIViewController {
     //Puzzles
     var puzzleScreen = SCNScene()
     var puzzleSequence: [Int] = [0,0,0,0]
-    var correctPuzzleSequence: [Int] = [1,2,3,4]
+    var correctPuzzleSequence: [Int] = [1,7,4,2]
     var puzzleCount = 0
     var selectedSlotNumber = 0
     
@@ -188,7 +188,6 @@ class ModernGameController: UIViewController {
         image7 = UIImage(named: "symbol7.png")
         image8 = UIImage(named: "symbol8.png")
         
-        symbol1Indicator.opacity = 0
         symbol1Indicator.isHidden = true
         symbol2Indicator.isHidden = true
         symbol3Indicator.isHidden = true
@@ -265,7 +264,8 @@ class ModernGameController: UIViewController {
     
     func playerJumpscare(){
         isJumpscared = true
-        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
+//        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
+        let jumpscarePosition = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z + 15)
         
         
         

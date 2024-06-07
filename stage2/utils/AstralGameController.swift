@@ -24,6 +24,14 @@ class AstralGameController: UIViewController {
     var pillarKeduaNode: SCNNode!
     var pillarKetigaNode: SCNNode!
     var pillarKeempatNode: SCNNode!
+    var torch1: SCNNode!
+    var torch2: SCNNode!
+    var torch3: SCNNode!
+    var torch4: SCNNode!
+    var light1: SCNNode!
+    var light2: SCNNode!
+    var light3: SCNNode!
+    var light4: SCNNode!
     
     // Safe Nodes
     var safeNode: SCNNode!
@@ -42,6 +50,19 @@ class AstralGameController: UIViewController {
     var isLeft = 1
     var isRight = 1
     
+    //PillarPuzzle
+    var correctPuzzleSequence: [Int] = [1,3,2,4]
+    var puzzleSequence: [Int] = [0,0,0,0]
+    var colorBall1: SCNNode!
+    var colorBall2: SCNNode!
+    var colorBall3: SCNNode!
+    var colorBall4: SCNNode!
+    var order = -1
+    
+    
+    
+    
+    
     // Multipeer Connectivity Manager
     var multipeerManager: MultipeerManager!
     
@@ -51,6 +72,7 @@ class AstralGameController: UIViewController {
         setupScene()
         setupNode()
         setupCamera()
+        setupPuzzle()
         setupGestures()
         setUpAudioCapture()
         playAmbience()
@@ -79,6 +101,20 @@ class AstralGameController: UIViewController {
         pillarKeduaNode = scene.rootNode.childNode(withName: "pillarKedua", recursively: true)!
         pillarKetigaNode = scene.rootNode.childNode(withName: "pillarKetiga", recursively: true)!
         pillarKeempatNode = scene.rootNode.childNode(withName: "pillarKeempat", recursively: true)!
+        torch1 = scene.rootNode.childNode(withName: "torch1", recursively: false)!
+        torch2 = scene.rootNode.childNode(withName: "torch2", recursively: false)!
+        torch3 = scene.rootNode.childNode(withName: "torch3", recursively: false)!
+        torch4 = scene.rootNode.childNode(withName: "torch4", recursively: false)!
+        light1 = scene.rootNode.childNode(withName: "light1", recursively: true)!
+        light2 = scene.rootNode.childNode(withName: "light2", recursively: true)!
+        light3 = scene.rootNode.childNode(withName: "light3", recursively: true)!
+        light4 = scene.rootNode.childNode(withName: "light4", recursively: true)!
+        colorBall1 = scene.rootNode.childNode(withName: "torch1Color", recursively: true)!
+        colorBall2 = scene.rootNode.childNode(withName: "torch2Color", recursively: true)!
+        colorBall3 = scene.rootNode.childNode(withName: "torch3Color", recursively: true)!
+        colorBall4 = scene.rootNode.childNode(withName: "torch4Color", recursively: true)!
+        
+        
     }
     
     func setupScene() {
@@ -125,6 +161,13 @@ class AstralGameController: UIViewController {
         } catch {
             print("Error: Failed to set up recording session.")
         }
+    }
+    
+    func setupPuzzle(){
+        light1.isHidden = true
+        light2.isHidden = true
+        light3.isHidden = true
+        light4.isHidden = true
     }
     
     private func captureAudio() {
@@ -229,11 +272,63 @@ class AstralGameController: UIViewController {
         if let hitResult = hitResults.first {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
-//            if (tappedNode.name == "pillarPertama"){
-//                let material = SCNMaterial()
-//                material.diffuse.contents = UIColor.red
-//                pillarPertamaNode.geometry?.materials = [material]
-//            }
+            if(tappedNode.name == "torch1"){
+                light1.isHidden = false
+                order += 1
+                appendSequence(number: order, code: 1)
+                
+            } else if (tappedNode.name == "torch2"){
+                light2.isHidden = false
+                order += 1
+                appendSequence(number: order, code: 2)
+                
+            }else if (tappedNode.name == "torch3"){
+                light3.isHidden = false
+                order += 1
+                appendSequence(number: order, code: 3)
+                
+            }else if (tappedNode.name == "torch4"){
+                light4.isHidden = false
+                order += 1
+                appendSequence(number: order, code: 4)
+                
+            }
+        }
+    }
+    
+    func appendSequence(number: Int, code: Int){
+        puzzleSequence[number] = code
+        print(puzzleSequence)
+        if (puzzleSequence == correctPuzzleSequence){
+            
+            let material1 = SCNMaterial()
+            let material2 = SCNMaterial()
+            let material3 = SCNMaterial()
+            let material4 = SCNMaterial()
+            
+            material1.diffuse.contents = UIColor.red
+            material2.diffuse.contents = UIColor.blue
+            material3.diffuse.contents = UIColor.green
+            material4.diffuse.contents = UIColor.yellow
+            
+            colorBall3.geometry?.materials = [material1]
+            colorBall1.geometry?.materials = [material2]
+            colorBall4.geometry?.materials = [material3]
+            colorBall2.geometry?.materials = [material4]
+            
+            
+        } else if (puzzleSequence[0] != 0 && puzzleSequence[1] != 0 && puzzleSequence[2] != 0 && puzzleSequence[3] != 0) {
+            puzzleSequence[0] = 0
+            puzzleSequence[1] = 0
+            puzzleSequence[2] = 0
+            puzzleSequence[3] = 0
+            
+            light1.isHidden = true
+            light2.isHidden = true
+            light3.isHidden = true
+            light4.isHidden = true
+            
+            order = 0
         }
     }
     
