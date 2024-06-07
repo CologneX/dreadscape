@@ -282,7 +282,3 @@ struct PairingView: View {
 #Preview {
     PairingView(multipeer: MultipeerManager(), pairingCode: "7")
 }
-
-#Preview {
-    PairingView(multipeer: MultipeerManager(), pairingCode: "7")
-}

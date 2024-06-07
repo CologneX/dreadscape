@@ -19,6 +19,7 @@ class ModernGameController: UIViewController {
     var shelfNode: SCNNode!
     var jumpscareNode: SCNNode!
     var indicatorSafe: SCNNode!
+    var doorNode: SCNNode!
     
     //Safe Puzzles Node
     var symbol1Slot: SCNNode!
@@ -38,12 +39,12 @@ class ModernGameController: UIViewController {
     //Puzzles
     var puzzleScreen = SCNScene()
     var puzzleSequence: [Int] = [0,0,0,0]
-    var correctPuzzleSequence: [Int] = [1,2,3,4]
+    var correctPuzzleSequence: [Int] = [1,7,4,2]
     var puzzleCount = 0
     var selectedSlotNumber = 0
     
     var material2 = SCNMaterial()
-
+    
     // Position
     var isDone = false
     var isMoved = false
@@ -56,7 +57,7 @@ class ModernGameController: UIViewController {
     //Limit
     var isLeft = 1
     var isRight = 1
-
+    
     //Camera Position
     var cameraPositionStart = SCNVector3(x: -3.801, y: 137.466, z: 103.739)
     
@@ -93,7 +94,7 @@ class ModernGameController: UIViewController {
         setupJumpscare()
         setupGestures()
         setUpAudioCapture()
-//        playAmbience()
+        //        playAmbience()
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleGameStateChange(_:)), name: .gameStateDidChange, object: nil)
     }
@@ -120,6 +121,7 @@ class ModernGameController: UIViewController {
         safeDoorNode = scene.rootNode.childNode(withName: "Hinge", recursively: true)!
         shelfNode = scene.rootNode.childNode(withName: "shelf reference", recursively: true)!
         indicatorSafe = scene.rootNode.childNode(withName: "indicatorSafe", recursively: true)
+        doorNode = roomNode.childNode(withName: "door", recursively: false)!
         
         //Puzzle Node
         symbol1Slot = scene.rootNode.childNode(withName: "symbol1Slot", recursively: true)!
@@ -186,7 +188,6 @@ class ModernGameController: UIViewController {
         image7 = UIImage(named: "symbol7.png")
         image8 = UIImage(named: "symbol8.png")
         
-        symbol1Indicator.opacity = 0
         symbol1Indicator.isHidden = true
         symbol2Indicator.isHidden = true
         symbol3Indicator.isHidden = true
@@ -263,7 +264,8 @@ class ModernGameController: UIViewController {
     
     func playerJumpscare(){
         isJumpscared = true
-        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
+//        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
+        let jumpscarePosition = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z + 15)
         
         
         
@@ -278,7 +280,7 @@ class ModernGameController: UIViewController {
         
         let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
         let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
-
+        
         
         jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
         
@@ -360,7 +362,7 @@ class ModernGameController: UIViewController {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
             
-           
+            
             //Check What Tapped
             if(tappedNode.name == "bass1" || tappedNode.name == "bass2"){
                 let bassPositionX = bassNode.position.x
@@ -391,17 +393,19 @@ class ModernGameController: UIViewController {
             else if (tappedNode.name == "wall"){
                 let moveAction = SCNAction.move(to: cameraPositionStart, duration: 1)
                 cameraNode.runAction(moveAction)
+            } else if (tappedNode.name == "door"){
+                openDoor()
             }
             
-                    
-            var material = SCNMaterial()
-            var material3 = SCNMaterial()
-            var material4 = SCNMaterial()
-            var material5 = SCNMaterial()
-            var material6 = SCNMaterial()
-            var material7 = SCNMaterial()
-            var material8 = SCNMaterial()
-            var material9 = SCNMaterial()
+            
+            let material = SCNMaterial()
+            let material3 = SCNMaterial()
+            let material4 = SCNMaterial()
+            let material5 = SCNMaterial()
+            let material6 = SCNMaterial()
+            let material7 = SCNMaterial()
+            let material8 = SCNMaterial()
+            let material9 = SCNMaterial()
             
             
             if(tappedNode.name == "symbol1Slot"){
@@ -479,7 +483,7 @@ class ModernGameController: UIViewController {
                     selectedSlot.geometry?.materials = [material8]
                 }else if(tappedNode.name == "symbol8"){
                     appendSymbol(number:selectedSlotNumber, code: 8)
-                   
+                    
                     material9.diffuse.contents = image8
                     selectedSlot.geometry?.materials = [material9]
                 }
@@ -492,16 +496,16 @@ class ModernGameController: UIViewController {
     }
     
     func appendSymbol(number: Int, code: Int){
-            puzzleSequence[number] = code
-            if(puzzleSequence == correctPuzzleSequence) {
-                print("CORRECT")
-                material2.diffuse.contents = UIColor.green
-                indicatorSafe.geometry?.materials = [material2]
-                openSafeDoor()
-            }
+        puzzleSequence[number] = code
+        if(puzzleSequence == correctPuzzleSequence) {
+            print("CORRECT")
+            material2.diffuse.contents = UIColor.green
+            indicatorSafe.geometry?.materials = [material2]
+            openSafeDoor()
+        }
         
         print(puzzleSequence)
-            
+        
     }
     
     
@@ -554,9 +558,14 @@ class ModernGameController: UIViewController {
         self.safeDoorNode.runAction(rotateAction)
     }
     
+    func openDoor() {
+        let rotateAction = SCNAction.rotateTo(x: 0, y: -(90 * .pi / 180), z: 0, duration: 1.5)
+        rotateAction.timingMode = .easeInEaseOut
+        self.doorNode.runAction(rotateAction)
+    }
     //Puzzle Mechanism
     func puzzleView(){
-   
+        
         
     }
     
