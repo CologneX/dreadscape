@@ -92,7 +92,7 @@ class ModernGameController: UIViewController {
     
     func setupCamera() {
         //Camera Position Start
-        let cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
         
     }
     
@@ -112,10 +112,6 @@ class ModernGameController: UIViewController {
             AVAudioApplication.requestRecordPermission(completionHandler: {
                 response in print(response)
             })
-            //            recordingSession.requestRecordPermission({ result in
-            //
-            //                guard result else { return }
-            //            })
             captureAudio()
         } catch {
             print("Error: Failed to set up recording session.")

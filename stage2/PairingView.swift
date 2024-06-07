@@ -26,7 +26,7 @@ struct PairingView: View {
                 .font(.title)
                 .padding()
                 .bold()
-            Text("\(self.multipeer.$connectedPeer)")
+//            Text("\(self.multipeer.$connectedPeer)")
             VStack{
                 HStack{
                     Button(action: {
