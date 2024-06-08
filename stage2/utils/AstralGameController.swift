@@ -57,8 +57,17 @@ class AstralGameController: UIViewController {
     var colorBall2: SCNNode!
     var colorBall3: SCNNode!
     var colorBall4: SCNNode!
+    var colorBallBlue: SCNNode!
+    var colorBallYellow: SCNNode!
+    var colorBallRed: SCNNode!
+    var colorBallGreen: SCNNode!
     var order = -1
     
+    //TorchStatus
+    var torch1Status = false
+    var torch2status = false
+    var torch3status = false
+    var torch4status = false
     
     
     
@@ -113,7 +122,10 @@ class AstralGameController: UIViewController {
         colorBall2 = scene.rootNode.childNode(withName: "torch2Color", recursively: true)!
         colorBall3 = scene.rootNode.childNode(withName: "torch3Color", recursively: true)!
         colorBall4 = scene.rootNode.childNode(withName: "torch4Color", recursively: true)!
-        
+        colorBallBlue = scene.rootNode.childNode(withName: "colorBallBlue", recursively: true)!
+        colorBallYellow = scene.rootNode.childNode(withName: "colorBallYellow", recursively: true)!
+        colorBallRed = scene.rootNode.childNode(withName: "colorBallRed", recursively: true)!
+        colorBallGreen = scene.rootNode.childNode(withName: "colorBallGreen", recursively: true)!
         
     }
     
@@ -168,6 +180,11 @@ class AstralGameController: UIViewController {
         light2.isHidden = true
         light3.isHidden = true
         light4.isHidden = true
+        colorBallBlue.isHidden = true
+        colorBallYellow.isHidden = true
+        colorBallRed.isHidden = true
+        colorBallGreen.isHidden = true
+        
     }
     
     private func captureAudio() {
@@ -273,23 +290,35 @@ class AstralGameController: UIViewController {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
             if(tappedNode.name == "torch1"){
+                if(light1.isHidden == true){
+                    order += 1
+                }
                 light1.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 1)
                 
             } else if (tappedNode.name == "torch2"){
+                if(light2.isHidden == true){
+                    order += 1
+                }
                 light2.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 2)
                 
             }else if (tappedNode.name == "torch3"){
+                if(light3.isHidden == true){
+                    order += 1
+                }
                 light3.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 3)
                 
             }else if (tappedNode.name == "torch4"){
+                if(light4.isHidden == true){
+                    order += 1
+                }
                 light4.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 4)
                 
             }
@@ -301,20 +330,14 @@ class AstralGameController: UIViewController {
         print(puzzleSequence)
         if (puzzleSequence == correctPuzzleSequence){
             
-            let material1 = SCNMaterial()
-            let material2 = SCNMaterial()
-            let material3 = SCNMaterial()
-            let material4 = SCNMaterial()
-            
-            material1.diffuse.contents = UIColor.red
-            material2.diffuse.contents = UIColor.blue
-            material3.diffuse.contents = UIColor.green
-            material4.diffuse.contents = UIColor.yellow
-            
-            colorBall3.geometry?.materials = [material1]
-            colorBall1.geometry?.materials = [material2]
-            colorBall4.geometry?.materials = [material3]
-            colorBall2.geometry?.materials = [material4]
+            colorBall1.isHidden = true
+            colorBallBlue.isHidden = false
+            colorBall2.isHidden = true
+            colorBallYellow.isHidden = false
+            colorBall3.isHidden = true
+            colorBallRed.isHidden = false
+            colorBall4.isHidden = true
+            colorBallGreen.isHidden = false
             
             
         } else if (puzzleSequence[0] != 0 && puzzleSequence[1] != 0 && puzzleSequence[2] != 0 && puzzleSequence[3] != 0) {
