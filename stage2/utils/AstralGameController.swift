@@ -59,6 +59,11 @@ class AstralGameController: UIViewController {
     var colorBall4: SCNNode!
     var order = -1
     
+    //TorchStatus
+    var torch1Status = false
+    var torch2status = false
+    var torch3status = false
+    var torch4status = false
     
     
     
@@ -273,23 +278,35 @@ class AstralGameController: UIViewController {
             let tappedNode = hitResult.node
             print("node tapped: \(tappedNode)")
             if(tappedNode.name == "torch1"){
+                if(light1.isHidden == true){
+                    order += 1
+                }
                 light1.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 1)
                 
             } else if (tappedNode.name == "torch2"){
+                if(light2.isHidden == true){
+                    order += 1
+                }
                 light2.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 2)
                 
             }else if (tappedNode.name == "torch3"){
+                if(light3.isHidden == true){
+                    order += 1
+                }
                 light3.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 3)
                 
             }else if (tappedNode.name == "torch4"){
+                if(light4.isHidden == true){
+                    order += 1
+                }
                 light4.isHidden = false
-                order += 1
+                
                 appendSequence(number: order, code: 4)
                 
             }
