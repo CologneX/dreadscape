@@ -32,6 +32,7 @@ class AstralGameController: UIViewController {
     var light2: SCNNode!
     var light3: SCNNode!
     var light4: SCNNode!
+    var jumpscareNode: SCNNode!
     
     // Safe Nodes
     var safeNode: SCNNode!
@@ -69,6 +70,13 @@ class AstralGameController: UIViewController {
     var torch3status = false
     var torch4status = false
     
+    //Camera Position
+    var cameraPositionStart = SCNVector3(x: 2.315, y: 0.73, z: -0.012)
+    
+    //Player Lives and State
+    var playerLives = 3
+    var isJumpscared = false
+    
     
     
     
@@ -82,6 +90,7 @@ class AstralGameController: UIViewController {
         setupNode()
         setupCamera()
         setupPuzzle()
+        setupJumpscare()
         setupGestures()
         setUpAudioCapture()
         playAmbience()
@@ -92,7 +101,9 @@ class AstralGameController: UIViewController {
     @objc func handleGameStateChange(_ notification: Notification) {
         if let gameState = notification.object as? String {
             if gameState == "moveObjectToPlayerPosition" {
-                moveObjectToPlayerPosition()
+                cameraNode.light?.spotOuterAngle = 80
+                playerJumpscare()
+                isJumpscared = true
             }
         }
     }
@@ -105,7 +116,7 @@ class AstralGameController: UIViewController {
     func setupNode() {
         cameraNode = scene.rootNode.childNode(withName: "Camera", recursively: true)!
         ghostNode = scene.rootNode.childNode(withName: "wayangMonster reference", recursively: false)!
-        lightNode = scene.rootNode.childNode(withName: "Light", recursively: true)!
+        jumpscareNode = scene.rootNode.childNode(withName: "kepalaMonster", recursively: true)!
         pillarPertamaNode = scene.rootNode.childNode(withName: "pillarPertama", recursively: true)!
         pillarKeduaNode = scene.rootNode.childNode(withName: "pillarKedua", recursively: true)!
         pillarKetigaNode = scene.rootNode.childNode(withName: "pillarKetiga", recursively: true)!
@@ -149,7 +160,19 @@ class AstralGameController: UIViewController {
     
     func setupCamera() {
         //Camera Position Start
-        let cameraPositionStart = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        _ = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        
+        //Set Camera Light
+//        lightNode.light = SCNLight()
+//        lightNode.light!.type = .omni
+//        lightNode.light?.intensity = 21.5
+        
+        cameraNode.light = SCNLight()
+        cameraNode.light!.type = .spot
+        cameraNode.light?.intensity = 50
+        cameraNode.light?.spotInnerAngle = 0
+        cameraNode.light?.spotOuterAngle = 120.0
+        cameraNode.light?.color = UIColor.lightGray
         
     }
     
@@ -158,6 +181,47 @@ class AstralGameController: UIViewController {
         player = try! AVAudioPlayer(contentsOf: url!)
         player.volume = 1.0
         player.play()
+    }
+    
+    func setupJumpscare(){
+        jumpscareNode.light = SCNLight()
+        jumpscareNode.light?.type = .omni
+        jumpscareNode.light?.intensity = 0
+    }
+    
+    
+    
+    func playScream(){
+        if let source = SCNAudioSource(fileNamed: "art.scnassets/Audio/scream.mp3") {
+            let action = SCNAction.playAudio(source, waitForCompletion: false)
+            jumpscareNode.runAction(action)
+        } else {
+            print("Cannot find the audio file.")
+        }
+    }
+    
+    
+    
+    func playerJumpscare(){
+        let moveAction = SCNAction.move(to: cameraPositionStart, duration: 0.2)
+        cameraNode.runAction(moveAction)
+        isJumpscared = true
+        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
+//        let jumpscarePosition = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
+        
+        let moveJumpscare = SCNAction.move(to: jumpscarePosition, duration: 0.09)
+        moveJumpscare.timingMode = .easeInEaseOut
+        
+        fallAndFade2("test")
+        jumpscareNode.runAction(moveJumpscare)
+        playScream()
+        
+        let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
+        let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
+        
+        
+        jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
+        
     }
     
     private func setUpAudioCapture() {
@@ -206,7 +270,7 @@ class AstralGameController: UIViewController {
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
                 
-                if self.db > -5 {
+                if self.db > -14 {
                     self.audioTriggered()
                     print("Triggered")
                 }
@@ -356,25 +420,57 @@ class AstralGameController: UIViewController {
     }
     
     func audioTriggered() {
-        moveObjectToPlayerPosition()
-        multipeerManager.changeGameState("moveObjectToPlayerPosition")
+        
+        if(playerLives > 0){
+            print("Chance")
+            fallAndFade("test")
+            playerLives -= 1
+        } else if (playerLives == 0)  {
+            if(isJumpscared == false){
+                fallAndFade2("test")
+                playerJumpscare()
+                isJumpscared = true
+                multipeerManager.changeGameState("moveObjectToPlayerPosition")
+            }
+            
+        }
+        
+        _ = cameraNode.position
+        print("ghost: \(ghostNode.position)")
+        print("player: \(cameraNode.position)")
+        
+//        moveObjectToPlayerPosition()
+        
     }
-    func moveObjectToPlayerPosition() {
-        let position = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
-        
-        let positionx = cameraNode.position.x
-        let positiony = cameraNode.position.y - 16
-        let positionz = cameraNode.position.z + 25
-        
-        let position2 = SCNVector3(x: positionx, y: positiony, z: positionz)
-        
-        let moveAction = SCNAction.move(to: position2, duration: 0.05)
-        ghostNode.runAction(moveAction)
-    }
+//    func moveObjectToPlayerPosition() {
+//        let position = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
+//        
+//        let positionx = cameraNode.position.x
+//        let positiony = cameraNode.position.y - 16
+//        let positionz = cameraNode.position.z + 25
+//        
+//        let position2 = SCNVector3(x: positionx, y: positiony, z: positionz)
+//        
+//        let moveAction = SCNAction.move(to: position2, duration: 0.05)
+//        ghostNode.runAction(moveAction)
+//    }
     
     func openDoor() {
         let doorNode = scene.rootNode.childNode(withName: "door", recursively: true)!
         let moveAction = SCNAction.move(by: SCNVector3(0, 0, -5), duration: 1.0)
         doorNode.runAction(moveAction)
     }
+    
+    @IBAction func fallAndFade(_ sender: Any) {
+        SCNTransaction.animationDuration = 1.0
+        cameraNode.light?.spotOuterAngle -= 30
+    }
+    @IBAction func fallAndFade2(_ sender: Any) {
+        SCNTransaction.animationDuration = 0.001
+        cameraNode.light?.spotOuterAngle = 80
+    }
+}
+
+#Preview(){
+    AstralGameController()
 }
