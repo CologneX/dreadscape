@@ -101,8 +101,10 @@ class ModernGameController: UIViewController {
     
     @objc func handleGameStateChange(_ notification: Notification) {
         if let gameState = notification.object as? String {
+            print(gameState)
             if gameState == "moveObjectToPlayerPosition" {
-                moveObjectToPlayerPosition()
+//                moveObjectToPlayerPosition()
+                cameraNode.light?.spotOuterAngle = 80
                 playerJumpscare()
                 isJumpscared = true
             }
@@ -243,7 +245,6 @@ class ModernGameController: UIViewController {
                 self.db = audioRecorder.averagePower(forChannel: 0)
                 print(self.db)
                 if self.db > -14 {
-                    
                     self.audioTriggered()
                     print("Triggered")
                 }
@@ -263,12 +264,11 @@ class ModernGameController: UIViewController {
     }
     
     func playerJumpscare(){
+        let moveAction = SCNAction.move(to: cameraPositionStart, duration: 0.2)
+        cameraNode.runAction(moveAction)
         isJumpscared = true
-//        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
-        let jumpscarePosition = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z + 15)
-        
-        
-        
+        let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
+//        let jumpscarePosition = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
         
         SCNAction.wait(duration: 3)
         let moveJumpscare = SCNAction.move(to: jumpscarePosition, duration: 0.09)
@@ -509,26 +509,28 @@ class ModernGameController: UIViewController {
     }
     
     
-    func moveObjectToPlayerPosition() {
-        _ = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
-        
-        let positionx = cameraNode.position.x
-        let positiony = cameraNode.position.y - 16
-        let positionz = cameraNode.position.z + 25
-        
-        let position2 = SCNVector3(x: positionx, y: positiony, z: positionz)
-        
-        let moveAction = SCNAction.move(to: position2, duration: 0.05)
-        ghostNode.runAction(moveAction)
-    }
+//    func moveObjectToPlayerPosition() {
+//        _ = cameraNode.convertPosition(cameraNode.position, to: scene.rootNode)
+//        
+//        let positionx = cameraNode.position.x
+//        let positiony = cameraNode.position.y - 16
+//        let positionz = cameraNode.position.z + 25
+//        
+//        let position2 = SCNVector3(x: positionx, y: positiony, z: positionz)
+//        
+//        let moveAction = SCNAction.move(to: position2, duration: 0.05)
+//        ghostNode.runAction(moveAction)
+//    }
     
     func audioTriggered() {
         
         if(playerLives > 0){
-            fallAndFade(cameraNode)
+            print("Chance")
+            fallAndFade("test")
             playerLives -= 1
-        } else {
+        } else if (playerLives == 0)  {
             if(isJumpscared == false){
+                fallAndFade2("test")
                 playerJumpscare()
                 isJumpscared = true
                 multipeerManager.changeGameState("moveObjectToPlayerPosition")
@@ -540,7 +542,7 @@ class ModernGameController: UIViewController {
         print("ghost: \(ghostNode.position)")
         print("player: \(cameraNode.position)")
         
-        moveObjectToPlayerPosition()
+//        moveObjectToPlayerPosition()
         
     }
     
@@ -576,7 +578,7 @@ class ModernGameController: UIViewController {
     }
     @IBAction func fallAndFade2(_ sender: Any) {
         SCNTransaction.animationDuration = 0.001
-        cameraNode.light?.spotOuterAngle = 90
+        cameraNode.light?.spotOuterAngle = 80
     }
     
     
