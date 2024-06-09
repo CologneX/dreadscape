@@ -105,7 +105,7 @@ class MultipeerManager: NSObject, ObservableObject, MCSessionDelegate, MCNearbyS
             }
         }
     }
-
+    
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         // Handle received data
         if let state = String(data: data, encoding: .utf8) {
