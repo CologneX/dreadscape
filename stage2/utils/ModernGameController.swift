@@ -167,7 +167,7 @@ class ModernGameController: UIViewController {
         //Set Camera Light
         cameraNode.light = SCNLight()
         cameraNode.light!.type = .spot
-        cameraNode.light?.intensity = 700
+        cameraNode.light?.intensity = 900
         cameraNode.light?.spotInnerAngle = 0
         cameraNode.light?.spotOuterAngle = 120.0
         
@@ -270,7 +270,6 @@ class ModernGameController: UIViewController {
         let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
 //        let jumpscarePosition = SCNVector3(x: cameraNode.position.x, y: cameraNode.position.y, z: cameraNode.position.z)
         
-        SCNAction.wait(duration: 3)
         let moveJumpscare = SCNAction.move(to: jumpscarePosition, duration: 0.09)
         moveJumpscare.timingMode = .easeInEaseOut
         
