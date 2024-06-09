@@ -23,7 +23,7 @@ struct DreadscapeApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                contentView
+                AstralGameView(multipeer: multipeer)
             }
             .animation(.easeInOut, value: chosenWorld)
             .animation(.easeInOut, value: multipeer.connectedPeer)

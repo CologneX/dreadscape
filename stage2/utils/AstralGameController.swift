@@ -321,6 +321,9 @@ class AstralGameController: UIViewController {
                 
                 appendSequence(number: order, code: 4)
                 
+            } else if (tappedNode.name == "daun"){
+                
+                openDoor()
             }
         }
     }
@@ -373,8 +376,63 @@ class AstralGameController: UIViewController {
     }
     
     func openDoor() {
-        let doorNode = scene.rootNode.childNode(withName: "door", recursively: true)!
-        let moveAction = SCNAction.move(by: SCNVector3(0, 0, -5), duration: 1.0)
-        doorNode.runAction(moveAction)
+        let bola1 = scene.rootNode.childNode(withName: "bola1", recursively: true)!
+        let bola2 = scene.rootNode.childNode(withName: "bola2", recursively: true)!
+        let bola3 = scene.rootNode.childNode(withName: "bola3", recursively: true)!
+        let bola4 = scene.rootNode.childNode(withName: "bola4", recursively: true)!
+        let bola5 = scene.rootNode.childNode(withName: "bola5", recursively: true)!
+        let centerPintu = scene.rootNode.childNode(withName: "centerPintu", recursively: true)!
+        let doorLockNode = scene.rootNode.childNode(withName: "palangPintu", recursively: true)!
+        let leftDoorNode = scene.rootNode.childNode(withName: "pintuKiri", recursively: true)!
+        let rightDoorNode = scene.rootNode.childNode(withName: "pintuKanan", recursively: true)!
+//        let backgroundPintu = scene.rootNode.childNode(withName: "backgroundPintu", recursively: true)!
+
+        let bolaFadeOutAnimation: SCNAction = SCNAction.run { _ in
+            bola1.runAction(SCNAction.fadeOut(duration: 1.5))
+            bola2.runAction(SCNAction.fadeOut(duration: 1.5))
+            bola3.runAction(SCNAction.fadeOut(duration: 1.5))
+            bola4.runAction(SCNAction.fadeOut(duration: 1.5))
+            bola5.runAction(SCNAction.fadeOut(duration: 1.5))
+            centerPintu.runAction(SCNAction.fadeOut(duration: 1.5))
+        }
+        let doorLockAnimation:SCNAction = SCNAction.run { _ in
+            doorLockNode.runAction(SCNAction.moveBy(x: 0, y: 0, z: 0.5, duration: 1.5))
+        }
+        let doorLockOpacityAnimation: SCNAction = SCNAction.run { _ in
+            doorLockNode.runAction(SCNAction.fadeOut(duration: 1.5))
+        }
+        
+        // Set area light intensity to 5000 in the duration of 1 second
+//        let backgroundPintuIntensity = SCNAction.run { _ in
+//            backgroundPintu.light?.intensity = 5000
+//        }
+//        backgroundPintuIntensity.timingMode = .easeIn
+//        backgroundPintuIntensity.duration = 3
+        
+        
+        let leftDoorAnimation = SCNAction.run { _ in
+            leftDoorNode.runAction(SCNAction.rotateTo(x: 0, y: 1.8, z: 0, duration: 1.5))
+        }
+        leftDoorAnimation.timingMode = .easeInEaseOut
+        
+        
+        let rightDoorAnimation = SCNAction.run { _ in
+            rightDoorNode.runAction(SCNAction.rotateTo(x: 0, y: -1.8, z: 0, duration: 1.5))
+        }
+        rightDoorAnimation.timingMode = .easeInEaseOut
+        
+        // Sequence animation
+        let sequence = SCNAction.sequence([
+//            backgroundPintuIntensity,
+            bolaFadeOutAnimation,
+            SCNAction.wait(duration: 1.5),
+            doorLockAnimation,
+            SCNAction.wait(duration: 1),
+            doorLockOpacityAnimation,
+            SCNAction.wait(duration: 1.5),
+            leftDoorAnimation, rightDoorAnimation])
+        self.scene.rootNode.runAction(sequence)
+        
+        
     }
 }
