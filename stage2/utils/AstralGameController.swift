@@ -101,8 +101,7 @@ class AstralGameController: UIViewController {
     @objc func handleGameStateChange(_ notification: Notification) {
         if let gameState = notification.object as? String {
             if gameState == "moveObjectToPlayerPosition" {
-                cameraNode.light?.spotOuterAngle = 80
-                jumpscareNode.light?.intensity = 80
+                cameraNode.light?.spotOuterAngle = 40
                 playerJumpscare()
                 isJumpscared = true
             }
@@ -171,9 +170,9 @@ class AstralGameController: UIViewController {
         
         cameraNode.light = SCNLight()
         cameraNode.light!.type = .spot
-        cameraNode.light?.intensity = 50
+        cameraNode.light?.intensity = 300
         cameraNode.light?.spotInnerAngle = 0
-        cameraNode.light?.spotOuterAngle = 120.0
+        cameraNode.light?.spotOuterAngle = 60
         cameraNode.light?.color = UIColor.lightGray
         
     }
@@ -526,11 +525,11 @@ class AstralGameController: UIViewController {
     
     @IBAction func fallAndFade(_ sender: Any) {
         SCNTransaction.animationDuration = 1.0
-        cameraNode.light?.spotOuterAngle -= 30
+        cameraNode.light?.spotOuterAngle -= 7
     }
     @IBAction func fallAndFade2(_ sender: Any) {
         SCNTransaction.animationDuration = 0.001
-        cameraNode.light?.spotOuterAngle = 80
+        cameraNode.light?.spotOuterAngle = 40
     }
 }
 
