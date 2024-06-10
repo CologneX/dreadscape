@@ -196,6 +196,10 @@ class ModernGameController: UIViewController {
         symbol4Indicator.isHidden = true
     }
     
+    func setupWait(){
+        SCNAction.wait(duration: 10)
+    }
+    
     func playAmbience() {
         let url = Bundle.main.url(forResource: "horror_ambience", withExtension: "mp3")
         player = try! AVAudioPlayer(contentsOf: url!)
@@ -211,6 +215,7 @@ class ModernGameController: UIViewController {
     }
     
     private func setUpAudioCapture() {
+        SCNAction.wait(duration: 10.0)
         let recordingSession = AVAudioSession.sharedInstance()
         
         do {
@@ -329,10 +334,10 @@ class ModernGameController: UIViewController {
         switch gesture.direction {
         case .left:
             print("Swiped left")
-            rotateCameraLeft()
+            rotateCameraRight()
         case .right:
             print("Swiped right")
-            rotateCameraRight()
+            rotateCameraLeft()
         default:
             break
         }

@@ -102,6 +102,7 @@ class AstralGameController: UIViewController {
         if let gameState = notification.object as? String {
             if gameState == "moveObjectToPlayerPosition" {
                 cameraNode.light?.spotOuterAngle = 80
+                jumpscareNode.light?.intensity = 80
                 playerJumpscare()
                 isJumpscared = true
             }
@@ -139,6 +140,7 @@ class AstralGameController: UIViewController {
         colorBallGreen = scene.rootNode.childNode(withName: "colorBallGreen", recursively: true)!
         
     }
+    
     
     func setupScene() {
         scene = SCNScene(named: "art.scnassets/isekaiScene.scn")
@@ -204,6 +206,7 @@ class AstralGameController: UIViewController {
     
     func playerJumpscare(){
         let moveAction = SCNAction.move(to: cameraPositionStart, duration: 0.2)
+        jumpscareNode.light?.intensity = 80
         cameraNode.runAction(moveAction)
         isJumpscared = true
         let jumpscarePosition = SCNVector3(x: 0.80, y: 2, z: 0.8)
@@ -219,12 +222,14 @@ class AstralGameController: UIViewController {
         let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
         let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
         
+        jumpscareNode.light?.intensity = 0
         
         jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
         
     }
     
     private func setUpAudioCapture() {
+        SCNAction.wait(duration: 10.0)
         let recordingSession = AVAudioSession.sharedInstance()
         
         do {
@@ -325,10 +330,10 @@ class AstralGameController: UIViewController {
         switch gesture.direction {
         case .left:
             print("Swiped left")
-            rotateCameraLeft()
+            rotateCameraRight()
         case .right:
             print("Swiped right")
-            rotateCameraRight()
+            rotateCameraLeft()
         default:
             break
         }
