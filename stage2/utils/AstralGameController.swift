@@ -101,7 +101,7 @@ class AstralGameController: UIViewController {
     @objc func handleGameStateChange(_ notification: Notification) {
         if let gameState = notification.object as? String {
             if gameState == "moveObjectToPlayerPosition" {
-                cameraNode.light?.spotOuterAngle = 80
+                cameraNode.light?.spotOuterAngle = 65
                 playerJumpscare()
                 isJumpscared = true
             }
@@ -140,6 +140,7 @@ class AstralGameController: UIViewController {
         
     }
     
+    
     func setupScene() {
         scene = SCNScene(named: "art.scnassets/isekaiScene.scn")
         sceneView = SCNView(frame: self.view.bounds)
@@ -169,9 +170,9 @@ class AstralGameController: UIViewController {
         
         cameraNode.light = SCNLight()
         cameraNode.light!.type = .spot
-        cameraNode.light?.intensity = 50
+        cameraNode.light?.intensity = 15
         cameraNode.light?.spotInnerAngle = 0
-        cameraNode.light?.spotOuterAngle = 120.0
+        cameraNode.light?.spotOuterAngle = 75
         cameraNode.light?.color = UIColor.lightGray
         
     }
@@ -219,12 +220,14 @@ class AstralGameController: UIViewController {
         let action1 = SCNAction.rotateBy(x: 0, y: -(CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
         let action2 = SCNAction.rotateBy(x: 0, y: (CGFloat(Float.pi / 8)), z: 0, duration: 0.05)
         
+        jumpscareNode.light?.intensity = 0
         
         jumpscareNode.runAction(SCNAction.repeatForever(SCNAction.sequence([action1,action2])))
         
     }
     
     private func setUpAudioCapture() {
+        SCNAction.wait(duration: 10.0)
         let recordingSession = AVAudioSession.sharedInstance()
         
         do {
@@ -325,10 +328,10 @@ class AstralGameController: UIViewController {
         switch gesture.direction {
         case .left:
             print("Swiped left")
-            rotateCameraLeft()
+            rotateCameraRight()
         case .right:
             print("Swiped right")
-            rotateCameraRight()
+            rotateCameraLeft()
         default:
             break
         }
@@ -521,11 +524,11 @@ class AstralGameController: UIViewController {
     
     @IBAction func fallAndFade(_ sender: Any) {
         SCNTransaction.animationDuration = 1.0
-        cameraNode.light?.spotOuterAngle -= 30
+        cameraNode.light?.spotOuterAngle -= 15
     }
     @IBAction func fallAndFade2(_ sender: Any) {
         SCNTransaction.animationDuration = 0.001
-        cameraNode.light?.spotOuterAngle = 80
+        cameraNode.light?.spotOuterAngle = 65
     }
 }
 
