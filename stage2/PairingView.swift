@@ -271,6 +271,12 @@ struct PairingView: View {
             }
             if showTransitionVideo {
                 PlayerView()
+                    .overlay(
+                        Text("Waiting for connection...")
+                            .font(.custom("Cormorant Upright", size: 50))
+                            .bold()
+                            .foregroundStyle(.black)
+                    )
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

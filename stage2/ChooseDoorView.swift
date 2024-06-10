@@ -22,7 +22,6 @@ struct ChooseDoorView: View {
                         Image("PintuDuniaNyata")
                             .resizable()
                             .scaledToFit()
-                        
                     }
                     .frame(width: 350, height: 350)
                     .offset(y: 20)
