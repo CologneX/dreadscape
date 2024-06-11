@@ -170,7 +170,7 @@ class AstralGameController: UIViewController {
         
         cameraNode.light = SCNLight()
         cameraNode.light!.type = .spot
-        cameraNode.light?.intensity = 150
+        cameraNode.light?.intensity = 100
         cameraNode.light?.spotInnerAngle = 0
         cameraNode.light?.spotOuterAngle = 75
         cameraNode.light?.color = UIColor.lightGray
