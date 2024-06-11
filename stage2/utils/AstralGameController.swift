@@ -273,7 +273,7 @@ class AstralGameController: UIViewController {
                 audioRecorder.updateMeters()
                 self.db = audioRecorder.averagePower(forChannel: 0)
                 
-                if self.db > -30 {
+                if self.db > -5 {
                     self.audioTriggered()
                     print("Triggered")
                 }
